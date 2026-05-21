@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}登录 - 校园社团活动报名系统{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">管理员登录</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">登录</button>
+                    </div>
+                </form>
+                <hr>
+                <p class="text-muted small text-center">
+                    默认账号：admin<br>
+                    默认密码：admin123
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

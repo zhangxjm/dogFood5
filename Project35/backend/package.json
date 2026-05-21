@@ -1,0 +1,22 @@
+{
+  "name": "plant-care-backend",
+  "version": "1.0.0",
+  "description": "同城绿植养护服务预约系统后端",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "dependencies": {
+    "koa": "^2.14.2",
+    "koa-router": "^12.0.0",
+    "koa-bodyparser": "^4.4.0",
+    "koa2-cors": "^2.0.6",
+    "sequelize": "^6.32.1",
+    "mysql2": "^3.5.2",
+    "dayjs": "^1.11.9"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

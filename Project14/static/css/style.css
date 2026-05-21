@@ -1,0 +1,63 @@
+body {
+    padding-top: 4.5rem;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.card {
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+    transition: box-shadow .3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,.15);
+}
+
+.status-upcoming {
+    background-color: #198754 !important;
+}
+
+.status-ongoing {
+    background-color: #0d6efd !important;
+}
+
+.status-ended {
+    background-color: #6c757d !important;
+}
+
+.status-cancelled {
+    background-color: #dc3545 !important;
+}
+
+.activity-image {
+    height: 200px;
+    object-fit: cover;
+}
+
+.footer {
+    margin-top: 50px;
+    padding: 30px 0;
+    background-color: #f8f9fa;
+}
+
+.stat-card {
+    border-left: 4px solid;
+}
+
+.stat-card-primary {
+    border-left-color: #0d6efd;
+}
+
+.stat-card-success {
+    border-left-color: #198754;
+}
+
+.stat-card-info {
+    border-left-color: #0dcaf0;
+}
+
+.stat-card-warning {
+    border-left-color: #ffc107;
+}

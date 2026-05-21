@@ -1,0 +1,25 @@
+{
+  "name": "flower-store-miniprogram",
+  "version": "1.0.0",
+  "description": "鲜花门店预订小程序",
+  "main": "main.js",
+  "scripts": {
+    "dev:h5": "uni",
+    "build:h5": "uni build",
+    "dev:mp-weixin": "uni build --platform mp-weixin --watch",
+    "build:mp-weixin": "uni build --platform mp-weixin"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-alpha-5010120260519001",
+    "@dcloudio/uni-components": "3.0.0-alpha-5010120260519001",
+    "@dcloudio/uni-h5": "3.0.0-alpha-5010120260519001",
+    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-5010120260519001",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^3.4.0",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-5010120260519001",
+    "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5010120260519001",
+    "vite": "^5.0.0"
+  }
+}

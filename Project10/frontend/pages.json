@@ -1,0 +1,78 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "亲子乐园"
+      }
+    },
+    {
+      "path": "pages/projects/detail",
+      "style": {
+        "navigationBarTitleText": "项目详情"
+      }
+    },
+    {
+      "path": "pages/children/list",
+      "style": {
+        "navigationBarTitleText": "儿童信息"
+      }
+    },
+    {
+      "path": "pages/children/add",
+      "style": {
+        "navigationBarTitleText": "添加儿童"
+      }
+    },
+    {
+      "path": "pages/reservations/list",
+      "style": {
+        "navigationBarTitleText": "我的预约"
+      }
+    },
+    {
+      "path": "pages/admin/verify",
+      "style": {
+        "navigationBarTitleText": "核销管理"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "亲子乐园预约",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#3cc51f",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/home.png",
+        "selectedIconPath": "static/home-active.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/children/list",
+        "iconPath": "static/child.png",
+        "selectedIconPath": "static/child-active.png",
+        "text": "儿童"
+      },
+      {
+        "pagePath": "pages/reservations/list",
+        "iconPath": "static/order.png",
+        "selectedIconPath": "static/order-active.png",
+        "text": "预约"
+      },
+      {
+        "pagePath": "pages/admin/verify",
+        "iconPath": "static/admin.png",
+        "selectedIconPath": "static/admin-active.png",
+        "text": "核销"
+      }
+    ]
+  }
+}

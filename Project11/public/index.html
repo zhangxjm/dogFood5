@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人日常开销记账工具</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>💰 个人日常开销记账</h1>
+    </header>
+
+    <div class="summary-section">
+      <div class="month-selector">
+        <label for="monthSelect">选择月份：</label>
+        <input type="month" id="monthSelect">
+      </div>
+      <div class="summary-cards">
+        <div class="card income-card">
+          <div class="card-title">总收入</div>
+          <div class="card-value" id="totalIncome">¥0.00</div>
+        </div>
+        <div class="card expense-card">
+          <div class="card-title">总支出</div>
+          <div class="card-value" id="totalExpense">¥0.00</div>
+        </div>
+        <div class="card balance-card">
+          <div class="card-title">结余</div>
+          <div class="card-value" id="balance">¥0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="category-section" id="categorySection" style="display: none;">
+      <h3>📊 消费分类统计</h3>
+      <div class="category-list" id="categoryList"></div>
+    </div>
+
+    <div class="form-section">
+      <h3>📝 添加记录</h3>
+      <form id="expenseForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label>类型：</label>
+            <div class="radio-group">
+              <label><input type="radio" name="type" value="expense" checked> 支出</label>
+              <label><input type="radio" name="type" value="income"> 收入</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="amount">金额：</label>
+            <input type="number" id="amount" step="0.01" min="0" required placeholder="请输入金额">
+          </div>
+          <div class="form-group">
+            <label for="category">分类：</label>
+            <select id="category" required>
+              <option value="">请选择分类</option>
+              <option value="餐饮">餐饮</option>
+              <option value="交通">交通</option>
+              <option value="购物">购物</option>
+              <option value="娱乐">娱乐</option>
+              <option value="医疗">医疗</option>
+              <option value="教育">教育</option>
+              <option value="住房">住房</option>
+              <option value="工资">工资</option>
+              <option value="奖金">奖金</option>
+              <option value="投资">投资</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="date">日期：</label>
+            <input type="date" id="date" required>
+          </div>
+          <div class="form-group">
+            <label for="description">备注：</label>
+            <input type="text" id="description" placeholder="可选备注">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">添加记录</button>
+      </form>
+    </div>
+
+    <div class="list-section">
+      <h3>📋 记录列表</h3>
+      <div class="expense-list" id="expenseList"></div>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>编辑记录</h3>
+      <form id="editForm">
+        <input type="hidden" id="editId">
+        <div class="form-row">
+          <div class="form-group">
+            <label>类型：</label>
+            <div class="radio-group">
+              <label><input type="radio" name="editType" value="expense"> 支出</label>
+              <label><input type="radio" name="editType" value="income"> 收入</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editAmount">金额：</label>
+            <input type="number" id="editAmount" step="0.01" min="0" required>
+          </div>
+          <div class="form-group">
+            <label for="editCategory">分类：</label>
+            <select id="editCategory" required>
+              <option value="餐饮">餐饮</option>
+              <option value="交通">交通</option>
+              <option value="购物">购物</option>
+              <option value="娱乐">娱乐</option>
+              <option value="医疗">医疗</option>
+              <option value="教育">教育</option>
+              <option value="住房">住房</option>
+              <option value="工资">工资</option>
+              <option value="奖金">奖金</option>
+              <option value="投资">投资</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editDate">日期：</label>
+            <input type="date" id="editDate" required>
+          </div>
+          <div class="form-group">
+            <label for="editDescription">备注：</label>
+            <input type="text" id="editDescription">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">保存修改</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

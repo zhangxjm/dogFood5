@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>露天停车场车位管理系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🅿️ 露天停车场车位管理系统</h1>
+        </header>
+
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSpaces">50</div>
+                <div class="stat-label">总车位</div>
+            </div>
+            <div class="stat-card occupied">
+                <div class="stat-value" id="occupiedSpaces">0</div>
+                <div class="stat-label">已占用</div>
+            </div>
+            <div class="stat-card available">
+                <div class="stat-value" id="availableSpaces">50</div>
+                <div class="stat-label">空余车位</div>
+            </div>
+            <div class="stat-card today">
+                <div class="stat-value" id="todayVehicles">0</div>
+                <div class="stat-label">今日车辆</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="action-panel">
+                    <h2>车辆管理</h2>
+                    <div class="form-group">
+                        <label>车牌号</label>
+                        <input type="text" id="carPlate" placeholder="例如：京A12345">
+                    </div>
+                    <div class="button-group">
+                        <button onclick="carEntry()" class="btn btn-primary">车辆入场</button>
+                        <button onclick="carExit()" class="btn btn-danger">车辆离场</button>
+                    </div>
+                </div>
+
+                <div class="stats-panel-small">
+                    <h3>今日统计</h3>
+                    <p>已离场车辆: <span id="completedVehicles">0</span></p>
+                    <p>当前停放车辆: <span id="currentlyParked">0</span></p>
+                    <p>平均停车时长: <span id="avgDuration">0小时0分钟</span></p>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="showTab('spaces')">车位状态</button>
+                    <button class="tab-btn" onclick="showTab('records')">停车记录</button>
+                </div>
+
+                <div id="spacesTab" class="tab-content">
+                    <div class="parking-grid" id="parkingGrid">
+                    </div>
+                </div>
+
+                <div id="recordsTab" class="tab-content" style="display:none;">
+                    <div class="records-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>车牌号</th>
+                                    <th>车位号</th>
+                                    <th>入场时间</th>
+                                    <th>离场时间</th>
+                                    <th>停车时长</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recordsBody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination" id="pagination">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

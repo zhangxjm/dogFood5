@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}签到管理 - {{ activity.title }}{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>签到管理 - {{ activity.title }}</h2>
+    <a href="{% url 'activity_detail' activity.pk %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left"></i> 返回活动详情
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">快速签到</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">输入学号签到</label>
+                        <input type="text" class="form-control form-control-lg" id="student_id" name="student_id" placeholder="请输入学号" autofocus>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle"></i> 确认签到
+                        </button>
+                    </div>
+                </form>
+                <hr>
+                <div class="text-center">
+                    <h4>签到统计</h4>
+                    <p class="text-muted">
+                        已报名：{{ registrations|length }}人<br>
+                        已签到：{{ checked_in_ids|length }}人<br>
+                        签到率：{% widthratio checked_in_ids|length registrations|length 100 %}%
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">签到列表</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>序号</th>
+                                <th>学生姓名</th>
+                                <th>学号</th>
+                                <th>学院</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reg in registrations %}
+                            <tr {% if reg.pk in checked_in_ids %}class="table-success"{% endif %}>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ reg.student_name }}</td>
+                                <td>{{ reg.student_id }}</td>
+                                <td>{{ reg.college }}</td>
+                                <td>
+                                    {% if reg.pk in checked_in_ids %}
+                                    <span class="badge bg-success">已签到</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">未签到</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('student_id');
+    input.focus();
+    input.select();
+});
+</script>
+{% endblock %}

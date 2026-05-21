@@ -1,0 +1,121 @@
+.logo {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.seat-grid {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 16px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
+
+.seat-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid transparent;
+  min-height: 60px;
+  font-weight: 500;
+}
+
+.seat-item.available {
+  background: #d9f7be;
+  color: #389e0d;
+  border-color: #95de64;
+}
+
+.seat-item.available:hover {
+  background: #b7eb8f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.seat-item.occupied {
+  background: #ffccc7;
+  color: #cf1322;
+  border-color: #ff7875;
+  cursor: not-allowed;
+}
+
+.seat-item.inactive {
+  background: #e8e8e8;
+  color: #8c8c8c;
+  border-color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.seat-item.selected {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.time-slot {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid #d9d9d9;
+  transition: all 0.3s;
+}
+
+.time-slot.available {
+  background: #f6ffed;
+  border-color: #b7eb8f;
+  color: #52c41a;
+}
+
+.time-slot.available:hover {
+  background: #d9f7be;
+}
+
+.time-slot.occupied {
+  background: #fff1f0;
+  border-color: #ffa39e;
+  color: #ff4d4f;
+  cursor: not-allowed;
+}
+
+.time-slot.selected {
+  background: #e6f7ff;
+  border-color: #91d5ff;
+  color: #1890ff;
+}
+
+.stats-card {
+  text-align: center;
+  padding: 24px;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.stats-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.stats-card .stat-value {
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stats-card .stat-label {
+  font-size: 14px;
+  color: #8c8c8c;
+  margin-top: 8px;
+}

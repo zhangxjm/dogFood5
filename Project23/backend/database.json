@@ -1,0 +1,59 @@
+{
+  "categories": [
+    {
+      "id": "412dd89f-78ea-4586-9246-2c4391ad8ff3",
+      "name": "食品",
+      "description": "宠物主食、零食等"
+    },
+    {
+      "id": "686384cd-52eb-400a-a4c2-ecd30a643c45",
+      "name": "玩具",
+      "description": "宠物玩具、逗猫棒等"
+    },
+    {
+      "id": "3de6dd52-eea7-41c9-88bf-aec20bc936a2",
+      "name": "日用品",
+      "description": "猫砂、狗窝、食盆等"
+    },
+    {
+      "id": "2e43f8bb-3390-4881-b054-ad4661cf00e7",
+      "name": "医疗保健",
+      "description": "药品、保健品等"
+    }
+  ],
+  "products": [
+    {
+      "id": "4dbb063b-a6db-431a-b74f-fe71408536c7",
+      "name": "皇家猫粮",
+      "price": 128,
+      "stock": 50,
+      "CategoryId": "412dd89f-78ea-4586-9246-2c4391ad8ff3",
+      "description": "优质成猫粮"
+    },
+    {
+      "id": "cebe4f20-5381-47ce-8696-d58e98f27b26",
+      "name": "顽皮狗罐头",
+      "price": 15.9,
+      "stock": 100,
+      "CategoryId": "412dd89f-78ea-4586-9246-2c4391ad8ff3",
+      "description": "牛肉味狗罐头"
+    },
+    {
+      "id": "8ef45dc5-d5c0-4e93-9936-bbb18017143c",
+      "name": "逗猫棒",
+      "price": 19.9,
+      "stock": 80,
+      "CategoryId": "686384cd-52eb-400a-a4c2-ecd30a643c45",
+      "description": "羽毛逗猫棒"
+    },
+    {
+      "id": "07333e2d-d665-4efa-8a56-a6f8ae7e81eb",
+      "name": "猫砂",
+      "price": 29.9,
+      "stock": 60,
+      "CategoryId": "3de6dd52-eea7-41c9-88bf-aec20bc936a2",
+      "description": "膨润土猫砂"
+    }
+  ],
+  "sales": []
+}

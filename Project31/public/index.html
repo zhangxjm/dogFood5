@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 密码保险箱</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔐 密码保险箱</h1>
+            <div class="header-actions">
+                <button onclick="showAddModal()" class="btn btn-primary">➕ 添加账号</button>
+            </div>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 搜索平台、用户名或备注..." oninput="searchAccounts()">
+        </div>
+
+        <div class="main-content">
+            <aside class="sidebar">
+                <h3>📁 分组</h3>
+                <ul id="groupList" class="group-list">
+                    <li class="group-item active" data-id="all" onclick="filterByGroup(null)">
+                        <span class="group-color" style="background: #666;"></span>
+                        全部账号
+                    </li>
+                </ul>
+                <button onclick="showAddGroupModal()" class="btn btn-outline btn-small" style="margin-top: 10px;">
+                    ➕ 新建分组
+                </button>
+            </aside>
+
+            <main class="content">
+                <div id="accountList" class="account-list"></div>
+                <div id="emptyState" class="empty-state" style="display: none;">
+                    <div class="empty-icon">📭</div>
+                    <p>暂无账号，点击上方按钮添加</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">添加账号</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <form id="accountForm" onsubmit="saveAccount(event)">
+                <input type="hidden" id="accountId">
+                <div class="form-group">
+                    <label>平台名称 *</label>
+                    <input type="text" id="platform" required placeholder="例如：微信、GitHub">
+                </div>
+                <div class="form-group">
+                    <label>分组</label>
+                    <select id="groupId">
+                        <option value="">无分组</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>用户名/邮箱 *</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>密码 *</label>
+                        <div class="password-input">
+                            <input type="password" id="password" required>
+                            <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>网址</label>
+                    <input type="url" id="url" placeholder="https://">
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <textarea id="notes" rows="3" placeholder="添加备注信息..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="groupModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>新建分组</h2>
+                <span class="close" onclick="closeGroupModal()">&times;</span>
+            </div>
+            <form onsubmit="saveGroup(event)">
+                <div class="form-group">
+                    <label>分组名称 *</label>
+                    <input type="text" id="groupName" required placeholder="输入分组名称">
+                </div>
+                <div class="form-group">
+                    <label>颜色</label>
+                    <div class="color-picker">
+                        <span class="color-option" style="background: #e74c3c;" data-color="#e74c3c" onclick="selectColor(this)"></span>
+                        <span class="color-option" style="background: #3498db;" data-color="#3498db" onclick="selectColor(this)"></span>
+                        <span class="color-option selected" style="background: #2ecc71;" data-color="#2ecc71" onclick="selectColor(this)"></span>
+                        <span class="color-option" style="background: #f39c12;" data-color="#f39c12" onclick="selectColor(this)"></span>
+                        <span class="color-option" style="background: #9b59b6;" data-color="#9b59b6" onclick="selectColor(this)"></span>
+                        <span class="color-option" style="background: #1abc9c;" data-color="#1abc9c" onclick="selectColor(this)"></span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeGroupModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">创建</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

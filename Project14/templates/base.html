@@ -1,0 +1,88 @@
+{% load django_bootstrap5 %}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}校园社团活动报名系统{% endblock %}</title>
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <style>
+        body { padding-top: 60px; }
+        .navbar { box-shadow: 0 2px 4px rgba(0,0,0,.1); }
+        .card { box-shadow: 0 2px 8px rgba(0,0,0,.1); margin-bottom: 20px; }
+        .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.15); transition: box-shadow .3s ease; }
+        .badge { font-size: .8em; }
+        .status-upcoming { background-color: #198754; }
+        .status-ongoing { background-color: #0d6efd; }
+        .status-ended { background-color: #6c757d; }
+        .status-cancelled { background-color: #dc3545; }
+        .footer { margin-top: 50px; padding: 30px 0; background-color: #f8f9fa; }
+        .activity-image { height: 200px; object-fit: cover; }
+        .stat-card { border-left: 4px solid; }
+        .stat-card-primary { border-left-color: #0d6efd; }
+        .stat-card-success { border-left-color: #198754; }
+        .stat-card-info { border-left-color: #0dcaf0; }
+        .stat-card-warning { border-left-color: #ffc107; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <i class="bi bi-calendar-event"></i> 社团活动报名系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'activity_list' %}">活动列表</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'activity_create' %}">发布活动</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard' %}">数据统计</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">退出登录</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">管理员登录</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% bootstrap_messages %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer class="footer">
+        <div class="container text-center">
+            <p class="text-muted mb-0">© 2024 校园社团活动报名系统 | 简化管理，高效报名</p>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

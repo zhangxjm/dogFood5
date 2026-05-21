@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: flower-store-postgres
+    environment:
+      POSTGRES_USER: flower
+      POSTGRES_PASSWORD: flower123
+      POSTGRES_DB: flower_store
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U flower -d flower_store"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - flower-network
+
+  backend:
+    build: ./backend
+    container_name: flower-store-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=flower
+      - DB_PASSWORD=flower123
+      - DB_DATABASE=flower_store
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - flower-network
+
+volumes:
+  postgres_data:
+
+networks:
+  flower-network:
+    driver: bridge

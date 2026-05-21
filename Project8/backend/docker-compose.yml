@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: groupbuy_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: groupbuy
+      MYSQL_USER: groupbuy
+      MYSQL_PASSWORD: groupbuy123
+      LANG: C.UTF-8
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --init-connect='SET NAMES utf8mb4;'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - groupbuy_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    build: .
+    container_name: groupbuy_backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - groupbuy_network
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=mysql+pymysql://groupbuy:groupbuy123@mysql:3306/groupbuy?charset=utf8mb4
+
+volumes:
+  mysql_data:
+
+networks:
+  groupbuy_network:
+    driver: bridge

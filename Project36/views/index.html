@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仓库物料管理系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f0f2f5; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 28px; }
+        .container { max-width: 1400px; margin: 20px auto; padding: 0 20px; }
+        .nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        .nav button { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.3s; background: white; color: #333; }
+        .nav button:hover, .nav button.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; transform: translateY(-2px); }
+        .stats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; margin-bottom: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
+        .stat-card h3 { font-size: 14px; color: #666; margin-bottom: 10px; }
+        .stat-card .value { font-size: 28px; font-weight: bold; color: #333; }
+        .stat-card:nth-child(1) .value { color: #667eea; }
+        .stat-card:nth-child(2) .value { color: #764ba2; }
+        .stat-card:nth-child(3) .value { color: #11998e; }
+        .stat-card:nth-child(4) .value { color: #f093fb; }
+        .stat-card:nth-child(5) .value { color: #ff6b6b; }
+        .stat-card:nth-child(6) .value { color: #feca57; }
+        .content { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .toolbar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+        .toolbar input, .toolbar select { padding: 10px 15px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .toolbar button { padding: 10px 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .toolbar button:hover { opacity: 0.9; }
+        .toolbar button.danger { background: #ff6b6b; }
+        .toolbar button.success { background: #11998e; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: 600; color: #333; }
+        tr:hover { background: #f8f9fa; }
+        .action-btn { padding: 6px 12px; margin-right: 5px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .action-btn.edit { background: #4dabf7; color: white; }
+        .action-btn.delete { background: #ff6b6b; color: white; }
+        .action-btn.in { background: #51cf66; color: white; }
+        .action-btn.out { background: #ff922b; color: white; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 500px; max-width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-content h2 { margin-bottom: 20px; color: #333; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #666; font-size: 14px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        .modal-footer button { padding: 10px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+        .modal-footer .cancel { background: #ddd; color: #333; }
+        .modal-footer .submit { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; }
+        .badge.active { background: #d4edda; color: #155724; }
+        .badge.inactive { background: #f8d7da; color: #721c24; }
+        .badge.in { background: #d1e7dd; color: #0f5132; }
+        .badge.out { background: #f8d7da; color: #842029; }
+        .pagination { display: flex; gap: 5px; justify-content: center; margin-top: 20px; align-items: center; }
+        .pagination button { padding: 8px 12px; border: 1px solid #ddd; background: white; cursor: pointer; border-radius: 4px; }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .pagination span { color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏭 仓库物料管理系统</h1>
+    </div>
+    <div class="container">
+        <div class="nav">
+            <button class="active" onclick="switchTab('area')">库区管理</button>
+            <button onclick="switchTab('material')">物料管理</button>
+            <button onclick="switchTab('inventory')">出入库记录</button>
+        </div>
+        <div class="stats">
+            <div class="stat-card">
+                <h3>物料总数</h3>
+                <div class="value" id="totalMaterials">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>库区数量</h3>
+                <div class="value" id="totalAreas">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>总入库量</h3>
+                <div class="value" id="totalInbound">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>总出库量</h3>
+                <div class="value" id="totalOutbound">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>库存预警</h3>
+                <div class="value" id="lowStockCount">0</div>
+            </div>
+            <div class="stat-card">
+                <h3>库存总值</h3>
+                <div class="value" id="totalStockValue">¥0</div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="toolbar" id="toolbar-area">
+                <input type="text" id="search-area-keyword" placeholder="搜索库区名称/编号">
+                <select id="search-area-status">
+                    <option value="-1">全部状态</option>
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </select>
+                <button onclick="searchArea()">搜索</button>
+                <button class="success" onclick="openAreaModal()">+ 新增库区</button>
+            </div>
+            <div class="toolbar" id="toolbar-material" style="display:none">
+                <input type="text" id="search-material-keyword" placeholder="搜索物料名称/编号">
+                <select id="search-material-area" onchange="searchMaterial()">
+                    <option value="0">全部库区</option>
+                </select>
+                <button onclick="searchMaterial()">搜索</button>
+                <button class="success" onclick="openMaterialModal()">+ 新增物料</button>
+            </div>
+            <div class="toolbar" id="toolbar-inventory" style="display:none">
+                <select id="search-inventory-material" onchange="searchInventory()">
+                    <option value="0">全部物料</option>
+                </select>
+                <select id="search-inventory-type" onchange="searchInventory()">
+                    <option value="-1">全部类型</option>
+                    <option value="1">入库</option>
+                    <option value="2">出库</option>
+                </select>
+                <input type="date" id="search-start-date">
+                <input type="date" id="search-end-date">
+                <button onclick="searchInventory()">搜索</button>
+                <button class="success" onclick="openInboundModal()">+ 入库</button>
+                <button class="danger" onclick="openOutboundModal()">- 出库</button>
+            </div>
+            <table id="table-area">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>库区编号</th>
+                        <th>库区名称</th>
+                        <th>类型</th>
+                        <th>位置</th>
+                        <th>负责人</th>
+                        <th>联系电话</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="area-tbody"></tbody>
+            </table>
+            <table id="table-material" style="display:none">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>物料编号</th>
+                        <th>物料名称</th>
+                        <th>规格型号</th>
+                        <th>单位</th>
+                        <th>所属库区</th>
+                        <th>库存数量</th>
+                        <th>单价</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="material-tbody"></tbody>
+            </table>
+            <table id="table-inventory" style="display:none">
+                <thead>
+                    <tr>
+                        <th>流水号</th>
+                        <th>物料编号</th>
+                        <th>物料名称</th>
+                        <th>类型</th>
+                        <th>数量</th>
+                        <th>操作前</th>
+                        <th>操作后</th>
+                        <th>操作人</th>
+                        <th>操作时间</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-tbody"></tbody>
+            </table>
+            <div class="pagination" id="pagination">
+                <button onclick="prevPage()" id="prev-btn">上一页</button>
+                <span id="page-info">第 1 页</span>
+                <button onclick="nextPage()" id="next-btn">下一页</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="area-modal">
+        <div class="modal-content">
+            <h2 id="area-modal-title">新增库区</h2>
+            <form id="area-form">
+                <input type="hidden" id="area-id">
+                <div class="form-group">
+                    <label>库区编号 *</label>
+                    <input type="text" id="area-code" required>
+                </div>
+                <div class="form-group">
+                    <label>库区名称 *</label>
+                    <input type="text" id="area-name" required>
+                </div>
+                <div class="form-group">
+                    <label>库区类型</label>
+                    <select id="area-type">
+                        <option value="1">原材料</option>
+                        <option value="2">半成品</option>
+                        <option value="3">成品</option>
+                        <option value="4">危险物品</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>库区位置</label>
+                    <input type="text" id="area-location">
+                </div>
+                <div class="form-group">
+                    <label>负责人</label>
+                    <input type="text" id="area-manager">
+                </div>
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="text" id="area-phone">
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <textarea id="area-remark"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" onclick="closeAreaModal()">取消</button>
+                    <button type="submit" class="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="material-modal">
+        <div class="modal-content">
+            <h2 id="material-modal-title">新增物料</h2>
+            <form id="material-form">
+                <input type="hidden" id="material-id">
+                <div class="form-group">
+                    <label>物料编号 *</label>
+                    <input type="text" id="material-code" required>
+                </div>
+                <div class="form-group">
+                    <label>物料名称 *</label>
+                    <input type="text" id="material-name" required>
+                </div>
+                <div class="form-group">
+                    <label>规格型号</label>
+                    <input type="text" id="material-spec">
+                </div>
+                <div class="form-group">
+                    <label>计量单位</label>
+                    <input type="text" id="material-unit">
+                </div>
+                <div class="form-group">
+                    <label>所属库区 *</label>
+                    <select id="material-area-id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>最低库存</label>
+                    <input type="number" id="material-min-stock" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label>单价</label>
+                    <input type="number" id="material-price" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label>供应商</label>
+                    <input type="text" id="material-supplier">
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <textarea id="material-remark"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" onclick="closeMaterialModal()">取消</button>
+                    <button type="submit" class="submit">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="inbound-modal">
+        <div class="modal-content">
+            <h2>物料入库</h2>
+            <form id="inbound-form">
+                <div class="form-group">
+                    <label>物料 *</label>
+                    <select id="inbound-material-id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>入库数量 *</label>
+                    <input type="number" id="inbound-quantity" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>操作人</label>
+                    <input type="text" id="inbound-operator">
+                </div>
+                <div class="form-group">
+                    <label>入库原因</label>
+                    <input type="text" id="inbound-reason">
+                </div>
+                <div class="form-group">
+                    <label>批次号</label>
+                    <input type="text" id="inbound-batch-no">
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <textarea id="inbound-remark"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" onclick="closeInboundModal()">取消</button>
+                    <button type="submit" class="submit">确认入库</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="outbound-modal">
+        <div class="modal-content">
+            <h2>物料出库</h2>
+            <form id="outbound-form">
+                <div class="form-group">
+                    <label>物料 *</label>
+                    <select id="outbound-material-id" required></select>
+                </div>
+                <div class="form-group">
+                    <label>出库数量 *</label>
+                    <input type="number" id="outbound-quantity" step="0.01" min="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label>操作人</label>
+                    <input type="text" id="outbound-operator">
+                </div>
+                <div class="form-group">
+                    <label>出库原因</label>
+                    <input type="text" id="outbound-reason">
+                </div>
+                <div class="form-group">
+                    <label>批次号</label>
+                    <input type="text" id="outbound-batch-no">
+                </div>
+                <div class="form-group">
+                    <label>备注</label>
+                    <textarea id="outbound-remark"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="cancel" onclick="closeOutboundModal()">取消</button>
+                    <button type="submit" class="submit">确认出库</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        const API_BASE = '/api';
+        let currentTab = 'area';
+        let currentPage = 1;
+        const pageSize = 10;
+        let areaList = [];
+        let materialList = [];
+        
+        function switchTab(tab) {
+            currentTab = tab;
+            currentPage = 1;
+            document.querySelectorAll('.nav button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('toolbar-area').style.display = tab === 'area' ? 'flex' : 'none';
+            document.getElementById('toolbar-material').style.display = tab === 'material' ? 'flex' : 'none';
+            document.getElementById('toolbar-inventory').style.display = tab === 'inventory' ? 'flex' : 'none';
+            document.getElementById('table-area').style.display = tab === 'area' ? 'table' : 'none';
+            document.getElementById('table-material').style.display = tab === 'material' ? 'table' : 'none';
+            document.getElementById('table-inventory').style.display = tab === 'inventory' ? 'table' : 'none';
+            if (tab === 'area') loadAreaList();
+            if (tab === 'material') loadMaterialList();
+            if (tab === 'inventory') loadInventoryList();
+        }
+        
+        async function loadStats() {
+            try {
+                const res = await fetch(`${API_BASE}/inventory/statistics`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    document.getElementById('totalMaterials').textContent = data.data.total_materials;
+                    document.getElementById('totalAreas').textContent = data.data.total_areas;
+                    document.getElementById('totalInbound').textContent = data.data.total_inbound;
+                    document.getElementById('totalOutbound').textContent = data.data.total_outbound;
+                    document.getElementById('lowStockCount').textContent = data.data.low_stock_count;
+                    document.getElementById('totalStockValue').textContent = '¥' + data.data.total_stock_value.toLocaleString();
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        async function loadAreaList() {
+            const keyword = document.getElementById('search-area-keyword').value;
+            const status = document.getElementById('search-area-status').value;
+            try {
+                const res = await fetch(`${API_BASE}/warehouse-area/list?page=${currentPage}&page_size=${pageSize}&keyword=${keyword}&status=${status}`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    areaList = data.data.list;
+                    renderAreaTable(data.data.list);
+                    updatePagination(data.data.total);
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        function renderAreaTable(list) {
+            const tbody = document.getElementById('area-tbody');
+            const areaTypes = {1: '原材料', 2: '半成品', 3: '成品', 4: '危险物品'};
+            tbody.innerHTML = list.map(item => `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.area_code}</td>
+                    <td>${item.area_name}</td>
+                    <td>${areaTypes[item.area_type] || '-'}</td>
+                    <td>${item.location || '-'}</td>
+                    <td>${item.manager || '-'}</td>
+                    <td>${item.phone || '-'}</td>
+                    <td><span class="badge ${item.status === 1 ? 'active' : 'inactive'}">${item.status === 1 ? '启用' : '禁用'}</span></td>
+                    <td>
+                        <button class="action-btn edit" onclick="editArea(${item.id})">编辑</button>
+                        <button class="action-btn ${item.status === 1 ? 'delete' : 'success'}" onclick="toggleAreaStatus(${item.id}, ${item.status})">${item.status === 1 ? '禁用' : '启用'}</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function searchArea() {
+            currentPage = 1;
+            loadAreaList();
+        }
+        
+        function openAreaModal(id = null) {
+            document.getElementById('area-modal').classList.add('active');
+            document.getElementById('area-modal-title').textContent = id ? '编辑库区' : '新增库区';
+            document.getElementById('area-form').reset();
+            document.getElementById('area-id').value = '';
+            if (id) {
+                const area = areaList.find(a => a.id === id);
+                if (area) {
+                    document.getElementById('area-id').value = area.id;
+                    document.getElementById('area-code').value = area.area_code;
+                    document.getElementById('area-name').value = area.area_name;
+                    document.getElementById('area-type').value = area.area_type;
+                    document.getElementById('area-location').value = area.location || '';
+                    document.getElementById('area-manager').value = area.manager || '';
+                    document.getElementById('area-phone').value = area.phone || '';
+                    document.getElementById('area-remark').value = area.remark || '';
+                }
+            }
+        }
+        
+        function closeAreaModal() {
+            document.getElementById('area-modal').classList.remove('active');
+        }
+        
+        async function saveArea(e) {
+            e.preventDefault();
+            const id = document.getElementById('area-id').value;
+            const data = {
+                area_code: document.getElementById('area-code').value,
+                area_name: document.getElementById('area-name').value,
+                area_type: parseInt(document.getElementById('area-type').value),
+                location: document.getElementById('area-location').value,
+                manager: document.getElementById('area-manager').value,
+                phone: document.getElementById('area-phone').value,
+                remark: document.getElementById('area-remark').value,
+            };
+            try {
+                const url = id ? `${API_BASE}/warehouse-area/${id}` : `${API_BASE}/warehouse-area/`;
+                const method = id ? 'PUT' : 'POST';
+                const res = await fetch(url, {
+                    method,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    closeAreaModal();
+                    loadAreaList();
+                    loadStats();
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        function editArea(id) {
+            openAreaModal(id);
+        }
+        
+        async function toggleAreaStatus(id, currentStatus) {
+            try {
+                const res = await fetch(`${API_BASE}/warehouse-area/${id}/status?status=${currentStatus === 1 ? 0 : 1}`, {method: 'PUT'});
+                const result = await res.json();
+                if (result.code === 200) {
+                    loadAreaList();
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        async function loadAreaOptions() {
+            try {
+                const res = await fetch(`${API_BASE}/warehouse-area/list?page=1&page_size=100&status=1`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    const options = data.data.list.map(a => `<option value="${a.id}">${a.area_name}</option>`).join('');
+                    document.getElementById('search-material-area').innerHTML = '<option value="0">全部库区</option>' + options;
+                    document.getElementById('material-area-id').innerHTML = options;
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        async function loadMaterialList() {
+            const keyword = document.getElementById('search-material-keyword').value;
+            const areaId = document.getElementById('search-material-area').value;
+            try {
+                const res = await fetch(`${API_BASE}/material/list?page=${currentPage}&page_size=${pageSize}&keyword=${keyword}&warehouse_area_id=${areaId}`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    materialList = data.data.list;
+                    renderMaterialTable(data.data.list);
+                    updatePagination(data.data.total);
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        function renderMaterialTable(list) {
+            const tbody = document.getElementById('material-tbody');
+            tbody.innerHTML = list.map(item => `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.material_code}</td>
+                    <td>${item.material_name}</td>
+                    <td>${item.specification || '-'}</td>
+                    <td>${item.unit || '-'}</td>
+                    <td>${item.area_name || '-'}</td>
+                    <td style="color: ${item.quantity <= item.min_stock ? '#ff6b6b' : '#333'}; font-weight: ${item.quantity <= item.min_stock ? 'bold' : 'normal'}">${item.quantity}</td>
+                    <td>¥${item.price}</td>
+                    <td><span class="badge ${item.status === 1 ? 'active' : 'inactive'}">${item.status === 1 ? '正常' : '停用'}</span></td>
+                    <td>
+                        <button class="action-btn edit" onclick="editMaterial(${item.id})">编辑</button>
+                        <button class="action-btn in" onclick="quickInbound(${item.id})">入库</button>
+                        <button class="action-btn out" onclick="quickOutbound(${item.id})">出库</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function searchMaterial() {
+            currentPage = 1;
+            loadMaterialList();
+        }
+        
+        function openMaterialModal(id = null) {
+            document.getElementById('material-modal').classList.add('active');
+            document.getElementById('material-modal-title').textContent = id ? '编辑物料' : '新增物料';
+            document.getElementById('material-form').reset();
+            document.getElementById('material-id').value = '';
+            loadAreaOptions();
+            if (id) {
+                const material = materialList.find(m => m.id === id);
+                if (material) {
+                    document.getElementById('material-id').value = material.id;
+                    document.getElementById('material-code').value = material.material_code;
+                    document.getElementById('material-name').value = material.material_name;
+                    document.getElementById('material-spec').value = material.specification || '';
+                    document.getElementById('material-unit').value = material.unit || '';
+                    document.getElementById('material-area-id').value = material.warehouse_area_id;
+                    document.getElementById('material-min-stock').value = material.min_stock;
+                    document.getElementById('material-price').value = material.price;
+                    document.getElementById('material-supplier').value = material.supplier || '';
+                    document.getElementById('material-remark').value = material.remark || '';
+                }
+            }
+        }
+        
+        function closeMaterialModal() {
+            document.getElementById('material-modal').classList.remove('active');
+        }
+        
+        async function saveMaterial(e) {
+            e.preventDefault();
+            const id = document.getElementById('material-id').value;
+            const data = {
+                material_code: document.getElementById('material-code').value,
+                material_name: document.getElementById('material-name').value,
+                specification: document.getElementById('material-spec').value,
+                unit: document.getElementById('material-unit').value,
+                warehouse_area_id: document.getElementById('material-area-id').value,
+                min_stock: document.getElementById('material-min-stock').value,
+                price: document.getElementById('material-price').value,
+                supplier: document.getElementById('material-supplier').value,
+                remark: document.getElementById('material-remark').value,
+            };
+            try {
+                const url = id ? `${API_BASE}/material/${id}` : `${API_BASE}/material/`;
+                const method = id ? 'PUT' : 'POST';
+                const res = await fetch(url, {
+                    method,
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    closeMaterialModal();
+                    loadMaterialList();
+                    loadStats();
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        function editMaterial(id) {
+            openMaterialModal(id);
+        }
+        
+        async function quickInbound(materialId) {
+            await loadMaterialOptions();
+            document.getElementById('inbound-material-id').value = materialId;
+            openInboundModal();
+        }
+        
+        async function quickOutbound(materialId) {
+            await loadMaterialOptions();
+            document.getElementById('outbound-material-id').value = materialId;
+            openOutboundModal();
+        }
+        
+        async function loadMaterialOptions() {
+            try {
+                const res = await fetch(`${API_BASE}/material/list?page=1&page_size=100&status=1`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    const options = data.data.list.map(m => `<option value="${m.id}">${m.material_name} (${m.material_code}) - 库存: ${m.quantity}</option>`).join('');
+                    document.getElementById('search-inventory-material').innerHTML = '<option value="0">全部物料</option>' + options;
+                    document.getElementById('inbound-material-id').innerHTML = options;
+                    document.getElementById('outbound-material-id').innerHTML = options;
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        async function loadInventoryList() {
+            const materialId = document.getElementById('search-inventory-material').value;
+            const type = document.getElementById('search-inventory-type').value;
+            const startDate = document.getElementById('search-start-date').value;
+            const endDate = document.getElementById('search-end-date').value;
+            try {
+                const res = await fetch(`${API_BASE}/inventory/list?page=${currentPage}&page_size=${pageSize}&material_id=${materialId}&type=${type}&start_date=${startDate}&end_date=${endDate}`);
+                const data = await res.json();
+                if (data.code === 200) {
+                    renderInventoryTable(data.data.list);
+                    updatePagination(data.data.total);
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        function renderInventoryTable(list) {
+            const tbody = document.getElementById('inventory-tbody');
+            tbody.innerHTML = list.map(item => `
+                <tr>
+                    <td>${item.record_no}</td>
+                    <td>${item.material_code}</td>
+                    <td>${item.material_name}</td>
+                    <td><span class="badge ${item.type === 1 ? 'in' : 'out'}">${item.type === 1 ? '入库' : '出库'}</span></td>
+                    <td>${item.quantity} ${item.unit || ''}</td>
+                    <td>${item.before_quantity}</td>
+                    <td>${item.after_quantity}</td>
+                    <td>${item.operator || '-'}</td>
+                    <td>${item.operate_time}</td>
+                    <td>${item.remark || '-'}</td>
+                </tr>
+            `).join('');
+        }
+        
+        function searchInventory() {
+            currentPage = 1;
+            loadInventoryList();
+        }
+        
+        function openInboundModal() {
+            document.getElementById('inbound-modal').classList.add('active');
+            document.getElementById('inbound-form').reset();
+            loadMaterialOptions();
+        }
+        
+        function closeInboundModal() {
+            document.getElementById('inbound-modal').classList.remove('active');
+        }
+        
+        async function doInbound(e) {
+            e.preventDefault();
+            const data = {
+                material_id: document.getElementById('inbound-material-id').value,
+                quantity: document.getElementById('inbound-quantity').value,
+                operator: document.getElementById('inbound-operator').value,
+                reason: document.getElementById('inbound-reason').value,
+                batch_no: document.getElementById('inbound-batch-no').value,
+                remark: document.getElementById('inbound-remark').value,
+            };
+            try {
+                const res = await fetch(`${API_BASE}/inventory/inbound`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    closeInboundModal();
+                    loadInventoryList();
+                    loadMaterialList();
+                    loadStats();
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        function openOutboundModal() {
+            document.getElementById('outbound-modal').classList.add('active');
+            document.getElementById('outbound-form').reset();
+            loadMaterialOptions();
+        }
+        
+        function closeOutboundModal() {
+            document.getElementById('outbound-modal').classList.remove('active');
+        }
+        
+        async function doOutbound(e) {
+            e.preventDefault();
+            const data = {
+                material_id: document.getElementById('outbound-material-id').value,
+                quantity: document.getElementById('outbound-quantity').value,
+                operator: document.getElementById('outbound-operator').value,
+                reason: document.getElementById('outbound-reason').value,
+                batch_no: document.getElementById('outbound-batch-no').value,
+                remark: document.getElementById('outbound-remark').value,
+            };
+            try {
+                const res = await fetch(`${API_BASE}/inventory/outbound`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: new URLSearchParams(data)
+                });
+                const result = await res.json();
+                if (result.code === 200) {
+                    closeOutboundModal();
+                    loadInventoryList();
+                    loadMaterialList();
+                    loadStats();
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) { console.error(e); }
+        }
+        
+        function updatePagination(total) {
+            const totalPages = Math.ceil(total / pageSize);
+            document.getElementById('page-info').textContent = `第 ${currentPage} / ${totalPages} 页 (共 ${total} 条)`;
+            document.getElementById('prev-btn').disabled = currentPage <= 1;
+            document.getElementById('next-btn').disabled = currentPage >= totalPages;
+        }
+        
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                if (currentTab === 'area') loadAreaList();
+                if (currentTab === 'material') loadMaterialList();
+                if (currentTab === 'inventory') loadInventoryList();
+            }
+        }
+        
+        function nextPage() {
+            currentPage++;
+            if (currentTab === 'area') loadAreaList();
+            if (currentTab === 'material') loadMaterialList();
+            if (currentTab === 'inventory') loadInventoryList();
+        }
+        
+        document.getElementById('area-form').addEventListener('submit', saveArea);
+        document.getElementById('material-form').addEventListener('submit', saveMaterial);
+        document.getElementById('inbound-form').addEventListener('submit', doInbound);
+        document.getElementById('outbound-form').addEventListener('submit', doOutbound);
+        
+        window.onload = function() {
+            loadStats();
+            loadAreaList();
+            loadAreaOptions();
+        };
+    </script>
+</body>
+</html>

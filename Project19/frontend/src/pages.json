@@ -1,0 +1,66 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "鲜花预订"
+      }
+    },
+    {
+      "path": "pages/flower/detail",
+      "style": {
+        "navigationBarTitleText": "花束详情"
+      }
+    },
+    {
+      "path": "pages/order/create",
+      "style": {
+        "navigationBarTitleText": "预订订单"
+      }
+    },
+    {
+      "path": "pages/order/list",
+      "style": {
+        "navigationBarTitleText": "我的订单"
+      }
+    },
+    {
+      "path": "pages/address/list",
+      "style": {
+        "navigationBarTitleText": "配送地址"
+      }
+    },
+    {
+      "path": "pages/address/edit",
+      "style": {
+        "navigationBarTitleText": "编辑地址"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "鲜花预订",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#7A7E83",
+    "selectedColor": "#FF6B9D",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "花束"
+      },
+      {
+        "pagePath": "pages/order/list",
+        "text": "订单"
+      },
+      {
+        "pagePath": "pages/address/list",
+        "text": "地址"
+      }
+    ]
+  }
+}

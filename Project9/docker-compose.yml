@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: fresh-food-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: fresh_food_db
+      MYSQL_USER: fresh_food
+      MYSQL_PASSWORD: fresh123456
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+      - ./mysql/conf:/etc/mysql/conf.d
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --init-connect=SET NAMES utf8mb4
+      - --default-authentication-plugin=mysql_native_password
+    networks:
+      - fresh-food-network
+
+networks:
+  fresh-food-network:
+    driver: bridge

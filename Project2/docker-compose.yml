@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    platform: linux/amd64
+    container_name: repair_system_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: repair_system
+      MYSQL_USER: repair_user
+      MYSQL_PASSWORD: repair_password
+      LANG: C.UTF-8
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --init-connect='SET NAMES utf8mb4'
+    networks:
+      - repair_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    platform: linux/amd64
+    container_name: repair_system_phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root123456
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - repair_network
+
+volumes:
+  mysql_data:
+
+networks:
+  repair_network:
+    driver: bridge

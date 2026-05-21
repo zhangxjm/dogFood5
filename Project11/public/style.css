@@ -1,0 +1,384 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 30px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.summary-section {
+  padding: 30px;
+  background: #f8f9fa;
+}
+
+.month-selector {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.month-selector label {
+  font-weight: 500;
+  margin-right: 10px;
+}
+
+.month-selector input {
+  padding: 10px 15px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-title {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.card-value {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.income-card .card-value {
+  color: #10b981;
+}
+
+.expense-card .card-value {
+  color: #ef4444;
+}
+
+.balance-card .card-value {
+  color: #667eea;
+}
+
+.category-section {
+  padding: 0 30px 30px;
+}
+
+.category-section h3 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.category-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.category-item {
+  background: #f8f9fa;
+  padding: 12px 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.category-name {
+  font-weight: 500;
+  color: #555;
+}
+
+.category-amount {
+  color: #ef4444;
+  font-weight: 600;
+}
+
+.form-section {
+  padding: 30px;
+  border-top: 1px solid #eee;
+}
+
+.form-section h3,
+.list-section h3 {
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-group input,
+.form-group select {
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.radio-group {
+  display: flex;
+  gap: 20px;
+  padding: 12px 0;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-weight: normal;
+}
+
+.btn {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-edit {
+  background: #f59e0b;
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.list-section {
+  padding: 30px;
+  border-top: 1px solid #eee;
+}
+
+.expense-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expense-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.expense-item:hover {
+  background: #e9ecef;
+}
+
+.expense-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  margin-right: 15px;
+}
+
+.expense-item.income .expense-icon {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.expense-item.expense .expense-icon {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.expense-info {
+  flex: 1;
+}
+
+.expense-category {
+  font-weight: 600;
+  color: #333;
+  font-size: 16px;
+}
+
+.expense-description {
+  font-size: 14px;
+  color: #666;
+  margin-top: 3px;
+}
+
+.expense-date {
+  font-size: 13px;
+  color: #999;
+  margin-top: 3px;
+}
+
+.expense-amount {
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 15px;
+}
+
+.expense-item.income .expense-amount {
+  color: #10b981;
+}
+
+.expense-item.expense .expense-amount {
+  color: #ef4444;
+}
+
+.expense-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #aaa;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #333;
+}
+
+.modal-content h3 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #999;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .summary-cards {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .expense-item {
+    flex-wrap: wrap;
+  }
+  
+  .expense-actions {
+    width: 100%;
+    margin-top: 10px;
+    justify-content: flex-end;
+  }
+}

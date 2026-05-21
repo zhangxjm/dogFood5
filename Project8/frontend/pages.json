@@ -1,0 +1,122 @@
+{
+    "pages": [
+        {
+            "path": "pages/login/login",
+            "style": {
+                "navigationBarTitleText": "登录",
+                "navigationStyle": "default"
+            }
+        },
+        {
+            "path": "pages/index/index",
+            "style": {
+                "navigationBarTitleText": "首页",
+                "navigationStyle": "default"
+            }
+        },
+        {
+            "path": "pages/product/list",
+            "style": {
+                "navigationBarTitleText": "商品管理"
+            }
+        },
+        {
+            "path": "pages/product/form",
+            "style": {
+                "navigationBarTitleText": "商品编辑"
+            }
+        },
+        {
+            "path": "pages/order/list",
+            "style": {
+                "navigationBarTitleText": "订单管理"
+            }
+        },
+        {
+            "path": "pages/order/detail",
+            "style": {
+                "navigationBarTitleText": "订单详情"
+            }
+        },
+        {
+            "path": "pages/order/verify",
+            "style": {
+                "navigationBarTitleText": "订单核销"
+            }
+        },
+        {
+            "path": "pages/pickup/list",
+            "style": {
+                "navigationBarTitleText": "自提点管理"
+            }
+        },
+        {
+            "path": "pages/pickup/form",
+            "style": {
+                "navigationBarTitleText": "自提点编辑"
+            }
+        },
+        {
+            "path": "pages/earnings/index",
+            "style": {
+                "navigationBarTitleText": "收益统计"
+            }
+        },
+        {
+            "path": "pages/withdrawal/list",
+            "style": {
+                "navigationBarTitleText": "提现记录"
+            }
+        },
+        {
+            "path": "pages/withdrawal/apply",
+            "style": {
+                "navigationBarTitleText": "申请提现"
+            }
+        },
+        {
+            "path": "pages/mine/mine",
+            "style": {
+                "navigationBarTitleText": "我的"
+            }
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "社区团购团长端",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
+    },
+    "tabBar": {
+        "color": "#7A7E83",
+        "selectedColor": "#3cc51f",
+        "borderStyle": "black",
+        "backgroundColor": "#ffffff",
+        "list": [
+            {
+                "pagePath": "pages/index/index",
+                "iconPath": "static/tabbar/home.png",
+                "selectedIconPath": "static/tabbar/home_active.png",
+                "text": "首页"
+            },
+            {
+                "pagePath": "pages/product/list",
+                "iconPath": "static/tabbar/product.png",
+                "selectedIconPath": "static/tabbar/product_active.png",
+                "text": "商品"
+            },
+            {
+                "pagePath": "pages/order/list",
+                "iconPath": "static/tabbar/order.png",
+                "selectedIconPath": "static/tabbar/order_active.png",
+                "text": "订单"
+            },
+            {
+                "pagePath": "pages/mine/mine",
+                "iconPath": "static/tabbar/mine.png",
+                "selectedIconPath": "static/tabbar/mine_active.png",
+                "text": "我的"
+            }
+        ]
+    }
+}

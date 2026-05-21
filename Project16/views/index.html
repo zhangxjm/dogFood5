@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小区流浪动物救助信息登记系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #667eea;
+        }
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+        }
+        .tab:hover {
+            background: #e8e8e8;
+        }
+        .tab.active {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .content {
+            padding: 30px;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5a6fd6;
+        }
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #229954;
+        }
+        .search-box {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+            font-size: 14px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .modal-header h3 {
+            color: #333;
+        }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-待处理 {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .status-已救助 {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status-已领养 {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .action-btns {
+            display: flex;
+            gap: 5px;
+        }
+        .action-btns .btn {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐾 小区流浪动物救助信息登记系统</h1>
+            <p>Rescue Information Management System</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" data-tab="rescue">救助信息</button>
+            <button class="tab" data-tab="location">救助地点</button>
+            <button class="tab" data-tab="volunteer">帮扶人员</button>
+            <button class="tab" data-tab="donation">物资捐赠</button>
+        </div>
+        
+        <div class="content">
+            <div id="rescue" class="tab-content active">
+                <div class="toolbar">
+                    <h3>救助信息列表</h3>
+                    <button class="btn btn-primary" onclick="openModal('rescue')">+ 新增救助</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>动物类型</th>
+                            <th>描述</th>
+                            <th>救助地点</th>
+                            <th>帮扶人员</th>
+                            <th>状态</th>
+                            <th>登记时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rescue-list"></tbody>
+                </table>
+            </div>
+            
+            <div id="location" class="tab-content">
+                <div class="toolbar">
+                    <h3>救助地点列表</h3>
+                    <button class="btn btn-primary" onclick="openModal('location')">+ 新增地点</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>地点名称</th>
+                            <th>详细地址</th>
+                            <th>备注</th>
+                            <th>登记时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="location-list"></tbody>
+                </table>
+            </div>
+            
+            <div id="volunteer" class="tab-content">
+                <div class="toolbar">
+                    <h3>帮扶人员列表</h3>
+                    <button class="btn btn-primary" onclick="openModal('volunteer')">+ 新增人员</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>姓名</th>
+                            <th>电话</th>
+                            <th>微信号</th>
+                            <th>备注</th>
+                            <th>登记时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="volunteer-list"></tbody>
+                </table>
+            </div>
+            
+            <div id="donation" class="tab-content">
+                <div class="toolbar">
+                    <h3>物资捐赠列表</h3>
+                    <button class="btn btn-primary" onclick="openModal('donation')">+ 新增捐赠</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>物品名称</th>
+                            <th>数量</th>
+                            <th>单位</th>
+                            <th>捐赠人</th>
+                            <th>联系电话</th>
+                            <th>登记时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="donation-list"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">新增</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="modal-form">
+                <input type="hidden" id="edit-id" name="id">
+                <div id="form-fields"></div>
+            </form>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal()">取消</button>
+                <button class="btn btn-success" onclick="saveData()">保存</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentTab = 'rescue';
+        let currentType = '';
+        let locations = [];
+        let volunteers = [];
+        
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+                currentTab = this.dataset.tab;
+                document.getElementById(currentTab).classList.add('active');
+                loadData(currentTab);
+            });
+        });
+        
+        function openModal(type, id = null) {
+            currentType = type;
+            const modal = document.getElementById('modal');
+            const title = document.getElementById('modal-title');
+            const fields = document.getElementById('form-fields');
+            const editId = document.getElementById('edit-id');
+            
+            editId.value = id || '';
+            title.textContent = id ? '编辑' : '新增';
+            
+            let html = '';
+            if (type === 'location') {
+                html = `
+                    <div class="form-group">
+                        <label>地点名称</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>详细地址</label>
+                        <input type="text" name="address" required>
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea name="remark"></textarea>
+                    </div>
+                `;
+            } else if (type === 'volunteer') {
+                html = `
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input type="text" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>电话</label>
+                        <input type="text" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>微信号</label>
+                        <input type="text" name="wechat">
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea name="remark"></textarea>
+                    </div>
+                `;
+            } else if (type === 'rescue') {
+                html = `
+                    <div class="form-group">
+                        <label>动物类型</label>
+                        <input type="text" name="animalType" required placeholder="如：猫、狗">
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea name="description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>救助地点</label>
+                        <select name="locationId" id="location-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>帮扶人员</label>
+                        <select name="volunteerId" id="volunteer-select" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select name="status" required>
+                            <option value="待处理">待处理</option>
+                            <option value="已救助">已救助</option>
+                            <option value="已领养">已领养</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea name="remark"></textarea>
+                    </div>
+                `;
+            } else if (type === 'donation') {
+                html = `
+                    <div class="form-group">
+                        <label>物品名称</label>
+                        <input type="text" name="itemName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>数量</label>
+                        <input type="number" name="quantity" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>单位</label>
+                        <input type="text" name="unit" required placeholder="如：袋、箱、个">
+                    </div>
+                    <div class="form-group">
+                        <label>捐赠人</label>
+                        <input type="text" name="donorName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话</label>
+                        <input type="text" name="donorPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea name="remark"></textarea>
+                    </div>
+                `;
+            }
+            
+            fields.innerHTML = html;
+            modal.classList.add('active');
+            
+            if (type === 'rescue') {
+                loadSelectOptions();
+            }
+            
+            if (id) {
+                loadEditData(type, id);
+            }
+        }
+        
+        async function loadSelectOptions() {
+            const locRes = await fetch('/api/location/list');
+            const volRes = await fetch('/api/volunteer/list');
+            const locData = await locRes.json();
+            const volData = await volRes.json();
+            
+            locations = locData.data || [];
+            volunteers = volData.data || [];
+            
+            const locSelect = document.getElementById('location-select');
+            const volSelect = document.getElementById('volunteer-select');
+            
+            if (locSelect) {
+                locSelect.innerHTML = locations.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+            }
+            if (volSelect) {
+                volSelect.innerHTML = volunteers.map(v => `<option value="${v.id}">${v.name}</option>`).join('');
+            }
+        }
+        
+        async function loadEditData(type, id) {
+            const res = await fetch(`/api/${type}/list`);
+            const data = await res.json();
+            const item = data.data.find(i => i.id == id);
+            
+            if (item) {
+                const form = document.getElementById('modal-form');
+                Object.keys(item).forEach(key => {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) input.value = item[key];
+                });
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+        
+        async function saveData() {
+            const form = document.getElementById('modal-form');
+            const formData = new FormData(form);
+            const id = formData.get('id');
+            
+            const url = id ? `/api/${currentType}/update` : `/api/${currentType}/add`;
+            
+            const res = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await res.json();
+            if (data.code === 200) {
+                closeModal();
+                loadData(currentType);
+            } else {
+                alert('保存失败: ' + data.msg);
+            }
+        }
+        
+        async function deleteData(type, id) {
+            if (confirm('确定要删除这条记录吗？')) {
+                const formData = new FormData();
+                formData.append('id', id);
+                
+                const res = await fetch(`/api/${type}/delete`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await res.json();
+                if (data.code === 200) {
+                    loadData(type);
+                } else {
+                    alert('删除失败');
+                }
+            }
+        }
+        
+        async function loadData(type) {
+            const res = await fetch(`/api/${type}/list`);
+            const data = await res.json();
+            const list = data.data || [];
+            
+            let html = '';
+            if (list.length === 0) {
+                html = '<tr><td colspan="8" class="empty-state">暂无数据</td></tr>';
+            } else {
+                if (type === 'location') {
+                    list.forEach(item => {
+                        html += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.name}</td>
+                                <td>${item.address}</td>
+                                <td>${item.remark || '-'}</td>
+                                <td>${formatDate(item.created_at)}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn btn-primary" onclick="openModal('location', ${item.id})">编辑</button>
+                                        <button class="btn btn-danger" onclick="deleteData('location', ${item.id})">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else if (type === 'volunteer') {
+                    list.forEach(item => {
+                        html += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.name}</td>
+                                <td>${item.phone}</td>
+                                <td>${item.wechat || '-'}</td>
+                                <td>${item.remark || '-'}</td>
+                                <td>${formatDate(item.created_at)}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn btn-primary" onclick="openModal('volunteer', ${item.id})">编辑</button>
+                                        <button class="btn btn-danger" onclick="deleteData('volunteer', ${item.id})">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else if (type === 'rescue') {
+                    list.forEach(item => {
+                        html += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.animal_type || item.animalType}</td>
+                                <td>${(item.description || '').substring(0, 30)}...</td>
+                                <td>${item.location_name || item.LocationName || '-'}</td>
+                                <td>${item.volunteer_name || item.VolunteerName || '-'}</td>
+                                <td><span class="status-badge status-${item.status}">${item.status}</span></td>
+                                <td>${formatDate(item.created_at)}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn btn-primary" onclick="openModal('rescue', ${item.id})">编辑</button>
+                                        <button class="btn btn-danger" onclick="deleteData('rescue', ${item.id})">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else if (type === 'donation') {
+                    list.forEach(item => {
+                        html += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td>${item.item_name || item.itemName}</td>
+                                <td>${item.quantity}</td>
+                                <td>${item.unit}</td>
+                                <td>${item.donor_name || item.donorName}</td>
+                                <td>${(item.donor_phone || item.donorPhone) || '-'}</td>
+                                <td>${formatDate(item.created_at)}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="btn btn-primary" onclick="openModal('donation', ${item.id})">编辑</button>
+                                        <button class="btn btn-danger" onclick="deleteData('donation', ${item.id})">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                }
+            }
+            
+            document.getElementById(type + '-list').innerHTML = html;
+        }
+        
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        loadData('rescue');
+        loadData('location');
+        loadData('volunteer');
+        loadData('donation');
+    </script>
+</body>
+</html>

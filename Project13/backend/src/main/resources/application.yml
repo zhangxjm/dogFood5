@@ -1,0 +1,45 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: tea-shop-backend
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tea_shop?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: tea_shop
+    password: tea_shop123
+    hikari:
+      connection-timeout: 60000
+      maximum-pool-size: 5
+      minimum-idle: 1
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      connection-init-sql: SET NAMES utf8mb4
+
+  sql:
+    init:
+      mode: always
+      encoding: utf-8
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+    defer-datasource-initialization: true
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+logging:
+  level:
+    com.teashop: debug
+    org.hibernate.SQL: debug

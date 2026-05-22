@@ -65,7 +65,6 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
 import { saleApi, productApi } from '../api'
 
 const sales = ref([])

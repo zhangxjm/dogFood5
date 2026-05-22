@@ -1,24 +1,24 @@
 {
   "categories": [
     {
-      "id": "412dd89f-78ea-4586-9246-2c4391ad8ff3",
-      "name": "食品",
-      "description": "宠物主食、零食等"
-    },
-    {
-      "id": "686384cd-52eb-400a-a4c2-ecd30a643c45",
-      "name": "玩具",
-      "description": "宠物玩具、逗猫棒等"
-    },
-    {
       "id": "3de6dd52-eea7-41c9-88bf-aec20bc936a2",
       "name": "日用品",
       "description": "猫砂、狗窝、食盆等"
     },
     {
-      "id": "2e43f8bb-3390-4881-b054-ad4661cf00e7",
-      "name": "医疗保健",
-      "description": "药品、保健品等"
+      "id": null,
+      "name": "日用品",
+      "description": "12aa"
+    },
+    {
+      "id": null,
+      "name": "aa",
+      "description": "bb"
+    },
+    {
+      "id": null,
+      "name": "a12",
+      "description": "12"
     }
   ],
   "products": [

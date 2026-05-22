@@ -1,9 +1,0 @@
-package com.orchard.mapper;
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.orchard.entity.TimeSlot;
-import org.apache.ibatis.annotations.Mapper;
-
-@Mapper
-public interface TimeSlotMapper extends BaseMapper<TimeSlot> {
-}

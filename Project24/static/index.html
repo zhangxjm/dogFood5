@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>户外渔具门店信息管理系统</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎣 户外渔具门店信息管理系统</h1>
+            <div class="stats-bar" id="statsBar"></div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="dashboard">仪表盘</button>
+            <button class="tab-btn" data-tab="categories">品类管理</button>
+            <button class="tab-btn" data-tab="products">商品管理</button>
+            <button class="tab-btn" data-tab="customers">客户管理</button>
+            <button class="tab-btn" data-tab="purchases">采购记录</button>
+            <button class="tab-btn" data-tab="alerts">补货提醒</button>
+        </nav>
+
+        <main>
+            <section id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-info">
+                            <h3>品类数量</h3>
+                            <p id="statCategories">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎣</div>
+                        <div class="stat-info">
+                            <h3>商品数量</h3>
+                            <p id="statProducts">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>客户数量</h3>
+                            <p id="statCustomers">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3>总销售额</h3>
+                            <p id="statSales">¥0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card warning">
+                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-info">
+                            <h3>低库存商品</h3>
+                            <p id="statLowStock">0</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="categories" class="tab-content">
+                <div class="section-header">
+                    <h2>品类管理</h2>
+                    <button class="btn-primary" onclick="showCategoryModal()">+ 新增品类</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>品类名称</th>
+                                <th>描述</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="categoriesTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="products" class="tab-content">
+                <div class="section-header">
+                    <h2>商品管理</h2>
+                    <button class="btn-primary" onclick="showProductModal()">+ 新增商品</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>商品名称</th>
+                                <th>品类</th>
+                                <th>规格</th>
+                                <th>单价</th>
+                                <th>库存</th>
+                                <th>预警值</th>
+                                <th>供应商</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="customers" class="tab-content">
+                <div class="section-header">
+                    <h2>客户管理</h2>
+                    <button class="btn-primary" onclick="showCustomerModal()">+ 新增客户</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>客户姓名</th>
+                                <th>联系电话</th>
+                                <th>地址</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="purchases" class="tab-content">
+                <div class="section-header">
+                    <h2>采购记录</h2>
+                    <button class="btn-primary" onclick="showPurchaseModal()">+ 新增采购</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>客户</th>
+                                <th>商品</th>
+                                <th>数量</th>
+                                <th>单价</th>
+                                <th>总价</th>
+                                <th>采购日期</th>
+                                <th>备注</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchasesTable"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="alerts" class="tab-content">
+                <div class="section-header">
+                    <h2>补货提醒</h2>
+                </div>
+                <div id="alertsContainer"></div>
+            </section>
+        </main>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">标题</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="static/js/app.js"></script>
+</body>
+</html>

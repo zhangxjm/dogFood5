@@ -57,7 +57,7 @@ func InitDB() {
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetConnMaxLifetime(10 * time.Minute)
 
-	db.SingularTable(true)
+	db.SingularTable(false)
 	db.LogMode(false)
 
 	DB = db

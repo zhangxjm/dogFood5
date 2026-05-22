@@ -2,6 +2,7 @@ package routes
 
 import (
 	"fishing-store/controllers"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,6 +19,12 @@ func SetupRouter() *gin.Engine {
 			return
 		}
 		c.Next()
+	})
+
+	r.Static("/static", "./static")
+
+	r.GET("/", func(c *gin.Context) {
+		c.File("./static/index.html")
 	})
 
 	api := r.Group("/api")
@@ -63,7 +70,7 @@ func SetupRouter() *gin.Engine {
 	}
 
 	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{
+		c.JSON(http.StatusOK, gin.H{
 			"status":  "ok",
 			"message": "Fishing Store API is running",
 		})

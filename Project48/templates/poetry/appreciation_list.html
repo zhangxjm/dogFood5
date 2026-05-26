@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}赏析列表 - 诗词赏析分享平台{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="mb-3">赏析文章</h2>
+    <form method="GET" class="row g-3 align-items-end">
+        <div class="col-md-8">
+            <label class="form-label">搜索赏析</label>
+            <input type="text" name="q" class="form-control" value="{{ query }}" placeholder="赏析标题、内容、诗词...">
+        </div>
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary w-100">搜索</button>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    {% for appreciation in appreciations %}
+    <div class="col-md-6 mb-3">
+        <div class="card appreciation-card card-hover h-100">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{% url 'appreciation_detail' appreciation.pk %}" class="text-decoration-none">{{ appreciation.title }}</a>
+                </h5>
+                <p class="card-subtitle mb-2 text-muted">
+                    诗词：<a href="{% url 'poem_detail' appreciation.poem.pk %}">{{ appreciation.poem.title }}</a>
+                </p>
+                <p class="card-text">{{ appreciation.content|truncatechars:120 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">{{ appreciation.author.username }} | {{ appreciation.created_at|date:"Y-m-d" }}</small>
+                    <div>
+                        <span class="badge bg-success">点赞 {{ appreciation.likes }}</span>
+                        <span class="badge bg-info">评论 {{ appreciation.comments.count }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <p class="text-muted text-center">没有找到匹配的赏析文章</p>
+    </div>
+    {% endfor %}
+</div>
+
+{% if appreciations.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if appreciations.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?q={{ query }}&page={{ appreciations.previous_page_number }}">上一页</a>
+        </li>
+        {% endif %}
+
+        {% for num in appreciations.paginator.page_range %}
+            {% if appreciations.number == num %}
+            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > appreciations.number|add:'-3' and num < appreciations.number|add:'3' %}
+            <li class="page-item">
+                <a class="page-link" href="?q={{ query }}&page={{ num }}">{{ num }}</a>
+            </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if appreciations.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?q={{ query }}&page={{ appreciations.next_page_number }}">下一页</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

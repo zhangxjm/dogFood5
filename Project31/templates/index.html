@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>厂区出入管理系统</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <nav class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">🏭</div>
+      <div>
+        <div class="logo-title">厂区出入管理</div>
+        <div class="logo-sub">Access System</div>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <div class="nav-item active" data-tab="dashboard">
+        <span class="nav-icon">📊</span><span>数据概览</span>
+      </div>
+      <div class="nav-item" data-tab="employees">
+        <span class="nav-icon">👥</span><span>员工管理</span>
+      </div>
+      <div class="nav-item" data-tab="access">
+        <span class="nav-icon">🚪</span><span>出入记录</span>
+      </div>
+      <div class="nav-item" data-tab="visitors">
+        <span class="nav-icon">📋</span><span>来访登记</span>
+      </div>
+    </div>
+    <div class="nav-footer">
+      <div class="status-dot"></div>
+      <span>系统运行中</span>
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <!-- Dashboard -->
+    <section id="tab-dashboard" class="tab-panel active">
+      <div class="page-header">
+        <h1>数据概览</h1>
+        <span class="page-desc" id="today-date"></span>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-icon">👥</div>
+          <div>
+            <div class="stat-label">员工总数</div>
+            <div class="stat-value" id="stat-emp">0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-icon">✅</div>
+          <div>
+            <div class="stat-label">今日入厂</div>
+            <div class="stat-value" id="stat-in">0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-orange">
+          <div class="stat-icon">↩️</div>
+          <div>
+            <div class="stat-label">今日出厂</div>
+            <div class="stat-value" id="stat-out">0</div>
+          </div>
+        </div>
+        <div class="stat-card stat-purple">
+          <div class="stat-icon">👤</div>
+          <div>
+            <div class="stat-label">当前访客</div>
+            <div class="stat-value" id="stat-vis">0</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-row">
+        <div class="card">
+          <div class="card-header">
+            <h2>最近出入记录</h2>
+            <button class="btn-link" onclick="switchTab('access')">查看全部 →</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr><th>姓名</th><th>部门</th><th>方向</th><th>时间</th></tr>
+            </thead>
+            <tbody id="dash-access-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>当前在场访客</h2>
+            <button class="btn-link" onclick="switchTab('visitors')">管理 →</button>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr><th>姓名</th><th>单位</th><th>事由</th><th>到访时间</th></tr>
+            </thead>
+            <tbody id="dash-vis-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Employees -->
+    <section id="tab-employees" class="tab-panel">
+      <div class="page-header">
+        <h1>员工管理</h1>
+        <span class="page-desc">管理厂区员工档案</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>新增员工</h2>
+        </div>
+        <form id="emp-form" class="form-row">
+          <input name="name" placeholder="姓名 *" required />
+          <input name="dept" placeholder="部门" />
+          <input name="employee_no" placeholder="工号 (留空自动生成)" />
+          <input name="phone" placeholder="电话" />
+          <button type="submit" class="btn-primary">➕ 添加员工</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>员工列表</h2>
+          <input type="text" id="emp-search" placeholder="🔍 搜索姓名 / 工号 / 部门" class="search-input" />
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>ID</th><th>姓名</th><th>部门</th><th>工号</th><th>电话</th><th>操作</th></tr>
+            </thead>
+            <tbody id="emp-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Access Records -->
+    <section id="tab-access" class="tab-panel">
+      <div class="page-header">
+        <h1>出入记录</h1>
+        <span class="page-desc">记录和查询员工出入厂区情况</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>登记出入</h2>
+        </div>
+        <form id="access-form" class="form-row">
+          <select name="employee_id" id="access-emp" required>
+            <option value="">-- 选择员工 --</option>
+          </select>
+          <select name="direction" required>
+            <option value="in">入厂</option>
+            <option value="out">出厂</option>
+          </select>
+          <input name="reason" placeholder="事由 (如: 上班 / 出厂办事)" />
+          <button type="submit" class="btn-primary">📝 记录</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>批量查询</h2>
+        </div>
+        <div class="filter-bar">
+          <label>起始时间<input type="datetime-local" id="f-start" /></label>
+          <label>截止时间<input type="datetime-local" id="f-end" /></label>
+          <label>方向
+            <select id="f-dir">
+              <option value="">全部</option>
+              <option value="in">入厂</option>
+              <option value="out">出厂</option>
+            </select>
+          </label>
+          <label>员工
+            <select id="f-emp">
+              <option value="">全部</option>
+            </select>
+          </label>
+          <button id="f-apply" class="btn-primary">🔍 筛选</button>
+          <button id="f-reset" class="btn-secondary">重置</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>ID</th><th>姓名</th><th>部门</th><th>方向</th><th>事由</th><th>记录时间</th></tr>
+            </thead>
+            <tbody id="access-tbody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer" id="access-footer"></div>
+      </div>
+    </section>
+
+    <!-- Visitors -->
+    <section id="tab-visitors" class="tab-panel">
+      <div class="page-header">
+        <h1>来访登记</h1>
+        <span class="page-desc">外来人员来访登记与签离</span>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>新增访客</h2>
+        </div>
+        <form id="visitor-form" class="form-row">
+          <input name="name" placeholder="访客姓名 *" required />
+          <input name="id_card" placeholder="证件号" />
+          <input name="company" placeholder="所属单位" />
+          <input name="phone" placeholder="联系电话" />
+          <input name="purpose" placeholder="来访事由" />
+          <input name="contact" placeholder="被访人" />
+          <button type="submit" class="btn-primary">📝 登记</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>访客列表</h2>
+          <div class="filter-group">
+            <button class="chip active" data-vis-status="">全部</button>
+            <button class="chip" data-vis-status="visiting">在场</button>
+            <button class="chip" data-vis-status="left">已离开</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>ID</th><th>姓名</th><th>单位</th><th>事由</th><th>被访人</th><th>到访时间</th><th>离开时间</th><th>状态</th><th>操作</th></tr>
+            </thead>
+            <tbody id="vis-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

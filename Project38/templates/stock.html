@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">五金小店商品台账管理系统</h1>
+            <ul class="nav-menu">
+                <li><a href="/">货品列表</a></li>
+                <li><a href="/products/new">新增货品</a></li>
+                <li><a href="/stock">库存管理</a></li>
+                <li><a href="/logs">操作日志</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container">
+        <div class="page-header">
+            <h2>库存管理</h2>
+        </div>
+
+        <div class="alert-section">
+            <h3>库存缺货提醒</h3>
+            <div id="alertList" class="alert-list">
+                <p>加载中...</p>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" id="stockSearch" placeholder="搜索货品...">
+            <button onclick="loadStockList()">搜索</button>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名称</th>
+                        <th>类别</th>
+                        <th>当前库存</th>
+                        <th>最低库存</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTable">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">库存操作</h3>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        loadStockAlerts();
+        loadStockList();
+    </script>
+</body>
+</html>

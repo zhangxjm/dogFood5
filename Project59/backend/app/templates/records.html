@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>授课记录 - 线上乐器教学预约系统</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 线上乐器教学预约系统</h1>
+            <nav>
+                <a href="/">首页</a>
+                <a href="/courses">课程管理</a>
+                <a href="/bookings">预约管理</a>
+                <a href="/records" class="active">授课记录</a>
+                <a href="/stats">数据统计</a>
+            </nav>
+        </header>
+        
+        <main>
+            <h2 class="page-title">授课记录</h2>
+            
+            <div id="recordList">
+                <div class="loading">加载中...</div>
+            </div>
+        </main>
+    </div>
+    
+    <div id="recordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="recordModalTitle">授课记录详情</h2>
+                <button class="close-btn" onclick="closeModal('recordModal')">&times;</button>
+            </div>
+            <div id="recordDetailContent">
+            </div>
+        </div>
+    </div>
+    
+    <div id="editRecordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑授课记录</h2>
+                <button class="close-btn" onclick="closeModal('editRecordModal')">&times;</button>
+            </div>
+            <form id="editRecordForm" onsubmit="saveRecord(event)">
+                <input type="hidden" id="editRecordId">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <p style="margin-bottom: 5px;"><strong>课程：</strong><span id="editCourseName"></span></p>
+                    <p style="margin-bottom: 5px;"><strong>学员：</strong><span id="editStudentName"></span></p>
+                    <p style="margin-bottom: 0;"><strong>时间：</strong><span id="editBookingTime"></span></p>
+                </div>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div id="lessonTimer" class="timer" style="display: none;">00:00:00</div>
+                    <div style="display: flex; gap: 10px; justify-content: center;">
+                        <button type="button" id="startLessonBtn" class="btn btn-success" onclick="startLesson()">▶️ 开始授课</button>
+                        <button type="button" id="endLessonBtn" class="btn btn-danger" onclick="endLesson()" style="display: none;">⏹️ 结束授课</button>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 14px; color: #666;">
+                        <span id="actualStartTime">-</span> | <span id="actualEndTime">-</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>课程内容摘要</label>
+                    <textarea id="contentSummary" placeholder="记录本节课的主要内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>课后作业</label>
+                    <textarea id="homework" placeholder="布置课后作业..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>教师备注</label>
+                    <textarea id="teacherNotes" placeholder="教师对学员的评价和建议..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>学员反馈</label>
+                    <textarea id="studentFeedback" placeholder="学员的学习感受和反馈..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('editRecordModal')">取消</button>
+                    <button type="submit" class="btn btn-primary">保存记录</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+    <script>
+        let currentRecords = [];
+        let currentRecordId = null;
+        let timerInterval = null;
+        let timerSeconds = 0;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetBookingId = urlParams.get('bookingId');
+        
+        async function loadRecords() {
+            try {
+                const records = await apiCall(`${API_BASE}/records/`);
+                currentRecords = records;
+                renderRecords(records);
+                
+                if (targetBookingId) {
+                    const record = records.find(r => r.booking_id == targetBookingId);
+                    if (record) {
+                        setTimeout(() => editRecord(record.id), 500);
+                    }
+                }
+            } catch (e) {
+                document.getElementById('recordList').innerHTML = `
+                    <div class="empty-state">
+                        <p>加载记录失败</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderRecords(records) {
+            const container = document.getElementById('recordList');
+            
+            if (records.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <p>暂无授课记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>课程名称</th>
+                            <th>学员姓名</th>
+                            <th>授课教师</th>
+                            <th>授课日期</th>
+                            <th>实际时长</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${records.map(record => `
+                            <tr>
+                                <td>${record.course_name}</td>
+                                <td>${record.student_name}</td>
+                                <td>${record.teacher_name}</td>
+                                <td>${formatDate(record.booking_date)}</td>
+                                <td>${formatDuration(record.duration_minutes)}</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="viewRecord(${record.id})" style="padding: 5px 10px; font-size: 12px;">查看</button>
+                                    <button class="btn btn-warning btn-sm" onclick="editRecord(${record.id})" style="padding: 5px 10px; font-size: 12px;">编辑</button>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        async function viewRecord(recordId) {
+            try {
+                const record = await apiCall(`${API_BASE}/records/${recordId}`);
+                
+                document.getElementById('recordDetailContent').innerHTML = `
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <p style="margin-bottom: 8px;"><strong>课程：</strong>${record.course_name}</p>
+                        <p style="margin-bottom: 8px;"><strong>学员：</strong>${record.student_name}</p>
+                        <p style="margin-bottom: 8px;"><strong>教师：</strong>${record.teacher_name}</p>
+                        <p style="margin-bottom: 8px;"><strong>预约时间：</strong>${formatDate(record.booking_date)} ${record.start_time} - ${record.end_time}</p>
+                        <p style="margin-bottom: 0;"><strong>实际时长：</strong>${formatDuration(record.duration_minutes)}</p>
+                    </div>
+                    
+                    <div class="record-detail">
+                        <p><strong>课程内容：</strong>${record.content_summary || '未填写'}</p>
+                        <p><strong>课后作业：</strong>${record.homework || '未填写'}</p>
+                        <p><strong>教师备注：</strong>${record.teacher_notes || '未填写'}</p>
+                        <p style="margin-bottom: 0;"><strong>学员反馈：</strong>${record.student_feedback || '未填写'}</p>
+                    </div>
+                    
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button class="btn btn-warning" onclick="closeModal('recordModal'); editRecord(${recordId});">编辑记录</button>
+                    </div>
+                `;
+                
+                openModal('recordModal');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        async function editRecord(recordId) {
+            currentRecordId = recordId;
+            
+            try {
+                const record = await apiCall(`${API_BASE}/records/${recordId}`);
+                
+                document.getElementById('editRecordId').value = recordId;
+                document.getElementById('editCourseName').textContent = record.course_name;
+                document.getElementById('editStudentName').textContent = record.student_name;
+                document.getElementById('editBookingTime').textContent = `${formatDate(record.booking_date)} ${record.start_time} - ${record.end_time}`;
+                
+                document.getElementById('contentSummary').value = record.content_summary || '';
+                document.getElementById('homework').value = record.homework || '';
+                document.getElementById('teacherNotes').value = record.teacher_notes || '';
+                document.getElementById('studentFeedback').value = record.student_feedback || '';
+                
+                document.getElementById('actualStartTime').textContent = record.actual_start_time ? `开始: ${formatDateTime(record.actual_start_time)}` : '开始: -';
+                document.getElementById('actualEndTime').textContent = record.actual_end_time ? `结束: ${formatDateTime(record.actual_end_time)}` : '结束: -';
+                
+                if (record.actual_start_time && !record.actual_end_time) {
+                    document.getElementById('startLessonBtn').style.display = 'none';
+                    document.getElementById('endLessonBtn').style.display = 'inline-block';
+                    startTimer();
+                } else if (record.actual_end_time) {
+                    document.getElementById('startLessonBtn').style.display = 'none';
+                    document.getElementById('endLessonBtn').style.display = 'none';
+                } else {
+                    document.getElementById('startLessonBtn').style.display = 'inline-block';
+                    document.getElementById('endLessonBtn').style.display = 'none';
+                }
+                
+                openModal('editRecordModal');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        async function startLesson() {
+            try {
+                await apiCall(`${API_BASE}/records/${currentRecordId}/start`, {
+                    method: 'POST'
+                });
+                
+                document.getElementById('startLessonBtn').style.display = 'none';
+                document.getElementById('endLessonBtn').style.display = 'inline-block';
+                
+                const now = new Date();
+                document.getElementById('actualStartTime').textContent = `开始: ${formatDateTime(now.toISOString())}`;
+                
+                startTimer();
+                showAlert('授课已开始！');
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        async function endLesson() {
+            try {
+                const result = await apiCall(`${API_BASE}/records/${currentRecordId}/end`, {
+                    method: 'POST'
+                });
+                
+                document.getElementById('endLessonBtn').style.display = 'none';
+                stopTimer();
+                
+                const now = new Date();
+                document.getElementById('actualEndTime').textContent = `结束: ${formatDateTime(now.toISOString())}`;
+                
+                showAlert(`授课已结束，实际时长：${formatDuration(result.duration_minutes)}`);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        function startTimer() {
+            document.getElementById('lessonTimer').style.display = 'block';
+            timerInterval = setInterval(() => {
+                timerSeconds++;
+                const hours = Math.floor(timerSeconds / 3600);
+                const minutes = Math.floor((timerSeconds % 3600) / 60);
+                const seconds = timerSeconds % 60;
+                document.getElementById('lessonTimer').textContent = 
+                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }, 1000);
+        }
+        
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+        
+        async function saveRecord(event) {
+            event.preventDefault();
+            
+            const recordData = {
+                content_summary: document.getElementById('contentSummary').value,
+                homework: document.getElementById('homework').value,
+                teacher_notes: document.getElementById('teacherNotes').value,
+                student_feedback: document.getElementById('studentFeedback').value
+            };
+            
+            try {
+                await apiCall(`${API_BASE}/records/${currentRecordId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(recordData)
+                });
+                
+                stopTimer();
+                showAlert('记录保存成功！');
+                closeModal('editRecordModal');
+                loadRecords();
+            } catch (e) {
+                console.error(e);
+            }
+        }
+        
+        loadRecords();
+    </script>
+</body>
+</html>

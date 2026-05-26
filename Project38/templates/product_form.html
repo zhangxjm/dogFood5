@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">五金小店商品台账管理系统</h1>
+            <ul class="nav-menu">
+                <li><a href="/">货品列表</a></li>
+                <li><a href="/products/new">新增货品</a></li>
+                <li><a href="/stock">库存管理</a></li>
+                <li><a href="/logs">操作日志</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container">
+        <div class="page-header">
+            <h2 id="formTitle">{{if .product.ID}}编辑货品{{else}}新增货品{{end}}</h2>
+            <a href="/" class="btn-back">返回列表</a>
+        </div>
+
+        <form id="productForm" class="product-form">
+            <input type="hidden" id="productId" value="{{.product.ID}}">
+            
+            <div class="form-group">
+                <label for="name">货品名称 *</label>
+                <input type="text" id="name" name="name" value="{{.product.Name}}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">类别</label>
+                    <select id="category" name="category">
+                        <option value="">请选择</option>
+                        <option value="工具" {{if eq .product.Category "工具"}}selected{{end}}>工具</option>
+                        <option value="电动工具" {{if eq .product.Category "电动工具"}}selected{{end}}>电动工具</option>
+                        <option value="耗材" {{if eq .product.Category "耗材"}}selected{{end}}>耗材</option>
+                        <option value="管材" {{if eq .product.Category "管材"}}selected{{end}}>管材</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="unit">单位</label>
+                    <input type="text" id="unit" name="unit" value="{{.product.Unit}}" placeholder="如：把、台、盒">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="stock">库存数量</label>
+                    <input type="number" id="stock" name="stock" value="{{.product.Stock}}" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="minStock">最低库存提醒</label>
+                    <input type="number" id="minStock" name="minStock" value="{{.product.MinStock}}" min="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="purchasePrice">进货价格 (元)</label>
+                    <input type="number" id="purchasePrice" name="purchasePrice" value="{{.product.PurchasePrice}}" min="0" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label for="sellPrice">售卖价格 (元)</label>
+                    <input type="number" id="sellPrice" name="sellPrice" value="{{.product.SellPrice}}" min="0" step="0.01">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="supplier">供应商</label>
+                <input type="text" id="supplier" name="supplier" value="{{.product.Supplier}}">
+            </div>
+
+            <div class="form-group">
+                <label for="remark">备注</label>
+                <textarea id="remark" name="remark" rows="3">{{.product.Remark}}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">保存</button>
+                <button type="reset" class="btn-secondary">重置</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        document.getElementById('productForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveProduct();
+        });
+    </script>
+</body>
+</html>

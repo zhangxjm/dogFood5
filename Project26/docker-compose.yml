@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: gift-list-mongo
+    restart: unless-stopped
+    ports:
+      - "0:27017"
+    volumes:
+      - mongo-data:/data/db
+    command: --wiredEngineCacheSizeGB 0.25
+
+volumes:
+  mongo-data:

@@ -1,0 +1,103 @@
+<% pageTitle = '报名人员'; activeNav = 'participants'; %>
+<%- include('../partials/header') %>
+
+<h3 class="mb-4"><i class="bi bi-people"></i> 报名人员</h3>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form method="GET" action="/participants" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small">活动筛选</label>
+        <select name="activity_id" class="form-select form-select-sm">
+          <option value="">全部活动</option>
+          <% activities.forEach(function(a) { %>
+          <option value="<%= a.id %>" <%= filters.activity_id == a.id ? 'selected' : '' %>><%= a.title %></option>
+          <% }); %>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small">姓名/电话搜索</label>
+        <input type="text" name="search" class="form-control form-control-sm" value="<%= filters.search || '' %>" placeholder="输入姓名或电话">
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-search"></i> 搜索
+        </button>
+        <a href="/participants" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-arrow-counterclockwise"></i> 重置
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<% if (participants.length === 0) { %>
+<div class="text-center py-5">
+  <i class="bi bi-inbox display-1 text-muted"></i>
+  <p class="text-muted mt-3">暂无报名记录</p>
+</div>
+<% } else { %>
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>姓名</th>
+            <th>性别</th>
+            <th>年龄</th>
+            <th>联系电话</th>
+            <th>活动名称</th>
+            <th>活动日期</th>
+            <th>健康备注</th>
+            <th>紧急联系人</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% participants.forEach(function(p) { %>
+          <tr>
+            <td>
+              <span class="fw-semibold"><%= p.name %></span>
+            </td>
+            <td>
+              <% if (p.gender === 'male') { %>
+                <i class="bi bi-gender-male text-primary"></i> 男
+              <% } else { %>
+                <i class="bi bi-gender-female text-danger"></i> 女
+              <% } %>
+            </td>
+            <td><%= p.age || '-' %></td>
+            <td><small><%= p.phone %></small></td>
+            <td>
+              <a href="/activities/<%= p.activity_id %>" class="text-decoration-none">
+                <%= p.activity_title %>
+              </a>
+            </td>
+            <td><small><%= p.activity_date %></small></td>
+            <td>
+              <% if (p.health_note) { %>
+                <span class="badge bg-warning text-dark"><%= p.health_note %></span>
+              <% } else { %>
+                <small class="text-muted">无</small>
+              <% } %>
+            </td>
+            <td>
+              <% if (p.emergency_contact) { %>
+                <small><%= p.emergency_contact %><br><%= p.emergency_phone || '' %></small>
+              <% } else { %>
+                <small class="text-muted">-</small>
+              <% } %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer bg-light">
+    <small class="text-muted">共 <%= participants.length %> 条记录</small>
+  </div>
+</div>
+<% } %>
+
+<%- include('../partials/footer') %>

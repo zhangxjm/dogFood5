@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>硬笔书法打卡系统</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <h1>🖋️ 硬笔书法打卡系统</h1>
+            <div class="user-selector">
+                <label>选择用户：</label>
+                <select id="currentUser" onchange="switchUser()">
+                    <option value="">请选择用户</option>
+                </select>
+                <button class="btn-small" onclick="showUserModal()">+ 新用户</button>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="tasks" onclick="switchTab('tasks')">📋 打卡任务</button>
+            <button class="tab-btn" data-tab="upload" onclick="switchTab('upload')">📷 上传作品</button>
+            <button class="tab-btn" data-tab="gallery" onclick="switchTab('gallery')">🏆 优秀作品</button>
+            <button class="tab-btn" data-tab="stats" onclick="switchTab('stats')">📊 打卡统计</button>
+        </nav>
+
+        <main class="main-content">
+            <div id="tab-tasks" class="tab-content active">
+                <div class="section-header">
+                    <h2>📋 打卡任务</h2>
+                    <button class="btn-primary" onclick="showTaskModal()">+ 发布任务</button>
+                </div>
+                <div id="tasksList" class="cards-grid"></div>
+            </div>
+
+            <div id="tab-upload" class="tab-content">
+                <div class="section-header">
+                    <h2>📷 上传作品</h2>
+                </div>
+                <div class="upload-container">
+                    <form id="uploadForm" onsubmit="uploadWork(event)">
+                        <div class="form-group">
+                            <label>选择任务：</label>
+                            <select id="uploadTaskId" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>作品图片：</label>
+                            <input type="file" id="workImage" accept="image/*" required>
+                            <div class="image-preview" id="imagePreview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>作品描述：</label>
+                            <textarea id="workDescription" rows="3" placeholder="写下你的练习心得..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">提交打卡</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="tab-gallery" class="tab-content">
+                <div class="section-header">
+                    <h2>🏆 优秀作品展示</h2>
+                </div>
+                <div id="excellentWorks" class="gallery-grid"></div>
+            </div>
+
+            <div id="tab-stats" class="tab-content">
+                <div class="section-header">
+                    <h2>📊 打卡统计</h2>
+                </div>
+                <div class="stats-container">
+                    <div class="stats-summary" id="statsSummary"></div>
+                    <div class="stats-ranking">
+                        <h3>🏅 打卡排行榜</h3>
+                        <div id="rankingList"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div id="userModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('userModal')">&times;</span>
+                <h3>创建新用户</h3>
+                <form onsubmit="createUser(event)">
+                    <div class="form-group">
+                        <label>用户名：</label>
+                        <input type="text" id="newUsername" required placeholder="请输入用户名">
+                    </div>
+                    <div class="form-group">
+                        <label>昵称：</label>
+                        <input type="text" id="newNickname" placeholder="请输入昵称">
+                    </div>
+                    <button type="submit" class="btn-primary">创建用户</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="taskModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('taskModal')">&times;</span>
+                <h3>发布打卡任务</h3>
+                <form onsubmit="createTask(event)">
+                    <div class="form-group">
+                        <label>任务标题：</label>
+                        <input type="text" id="taskTitle" required placeholder="请输入任务标题">
+                    </div>
+                    <div class="form-group">
+                        <label>任务描述：</label>
+                        <textarea id="taskDescription" rows="3" placeholder="请输入任务描述"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">发布任务</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="imageModal" class="modal">
+            <div class="modal-content large">
+                <span class="close" onclick="closeModal('imageModal')">&times;</span>
+                <img id="modalImage" src="" alt="作品图片">
+            </div>
+        </div>
+    </div>
+
+    <script src="/frontend/js/app.js"></script>
+</body>
+</html>

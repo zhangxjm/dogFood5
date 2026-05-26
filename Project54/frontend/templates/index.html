@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工地宿舍入住人员管理系统</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>宿舍管理系统</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="icon">📊</span>
+                    <span>数据概览</span>
+                </a>
+                <a href="#" class="nav-item" data-page="dormitories">
+                    <span class="icon">🏢</span>
+                    <span>宿舍管理</span>
+                </a>
+                <a href="#" class="nav-item" data-page="workers">
+                    <span class="icon">👷</span>
+                    <span>工人信息</span>
+                </a>
+                <a href="#" class="nav-item" data-page="checkin">
+                    <span class="icon">📝</span>
+                    <span>入住登记</span>
+                </a>
+                <a href="#" class="nav-item" data-page="checkout">
+                    <span class="icon">🚪</span>
+                    <span>退宿登记</span>
+                </a>
+                <a href="#" class="nav-item" data-page="statistics">
+                    <span class="icon">📈</span>
+                    <span>人员统计</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h1 id="page-title">数据概览</h1>
+                <div class="user-info">
+                    <span>管理员</span>
+                </div>
+            </header>
+
+            <section class="content" id="content">
+            </section>
+        </main>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">标题</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body">
+            </div>
+            <div class="modal-footer" id="modal-footer">
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

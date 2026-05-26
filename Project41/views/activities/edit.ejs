@@ -1,0 +1,80 @@
+<% pageTitle = '编辑活动'; activeNav = 'activities'; %>
+<%- include('../partials/header') %>
+
+<div class="mb-4">
+  <a href="/activities/<%= activity.id %>" class="text-decoration-none text-muted small">
+    <i class="bi bi-arrow-left"></i> 返回活动详情
+  </a>
+  <h3 class="mb-0 mt-1"><i class="bi bi-pencil"></i> 编辑活动</h3>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-4">
+    <form method="POST" action="/activities/<%= activity.id %>?_method=PUT">
+      <div class="row g-3">
+        <div class="col-12">
+          <label class="form-label">活动标题 <span class="text-danger">*</span></label>
+          <input type="text" name="title" class="form-control <%= errors.title ? 'is-invalid' : '' %>" value="<%= activity.title %>" required>
+          <% if (errors.title) { %>
+          <div class="invalid-feedback"><%= errors.title %></div>
+          <% } %>
+        </div>
+        <div class="col-12">
+          <label class="form-label">活动描述</label>
+          <textarea name="description" class="form-control" rows="3"><%= activity.description || '' %></textarea>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">活动地点 <span class="text-danger">*</span></label>
+          <input type="text" name="location" class="form-control <%= errors.location ? 'is-invalid' : '' %>" value="<%= activity.location %>" required>
+          <% if (errors.location) { %>
+          <div class="invalid-feedback"><%= errors.location %></div>
+          <% } %>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">活动类别</label>
+          <select name="category" class="form-select">
+            <option value="文娱活动" <%= activity.category === '文娱活动' ? 'selected' : '' %>>文娱活动</option>
+            <option value="健身活动" <%= activity.category === '健身活动' ? 'selected' : '' %>>健身活动</option>
+            <option value="健康讲座" <%= activity.category === '健康讲座' ? 'selected' : '' %>>健康讲座</option>
+            <option value="节庆活动" <%= activity.category === '节庆活动' ? 'selected' : '' %>>节庆活动</option>
+            <option value="技能培训" <%= activity.category === '技能培训' ? 'selected' : '' %>>技能培训</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">活动日期 <span class="text-danger">*</span></label>
+          <input type="date" name="activity_date" class="form-control" value="<%= activity.activity_date %>" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">开始时间 <span class="text-danger">*</span></label>
+          <input type="time" name="start_time" class="form-control" value="<%= activity.start_time %>" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">结束时间 <span class="text-danger">*</span></label>
+          <input type="time" name="end_time" class="form-control" value="<%= activity.end_time %>" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">最大参与人数</label>
+          <input type="number" name="max_participants" class="form-control" min="1" max="500" value="<%= activity.max_participants %>">
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">活动状态</label>
+          <select name="status" class="form-select">
+            <option value="upcoming" <%= activity.status === 'upcoming' ? 'selected' : '' %>>即将开始</option>
+            <option value="ongoing" <%= activity.status === 'ongoing' ? 'selected' : '' %>>进行中</option>
+            <option value="completed" <%= activity.status === 'completed' ? 'selected' : '' %>>已结束</option>
+          </select>
+        </div>
+        <div class="col-12 mt-4">
+          <button type="submit" class="btn btn-primary px-4">
+            <i class="bi bi-check-lg"></i> 保存修改
+          </button>
+          <a href="/activities/<%= activity.id %>" class="btn btn-outline-secondary px-4">
+            <i class="bi bi-x-lg"></i> 取消
+          </a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

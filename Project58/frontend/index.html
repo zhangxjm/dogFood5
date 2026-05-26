@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>河道周边环境巡查记录系统</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>河道环境巡查系统</h1>
+            </div>
+            <nav class="sidebar-nav">
+                <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">数据概览</div>
+                <div class="nav-item" data-page="points" onclick="showPage('points')">巡查点位管理</div>
+                <div class="nav-item" data-page="records" onclick="showPage('records')">巡查问题记录</div>
+                <div class="nav-item" data-page="rectification" onclick="showPage('rectification')">整改情况管理</div>
+                <div class="nav-item" data-page="stats" onclick="showPage('stats')">巡查台账汇总</div>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h2 id="page-title">数据概览</h2>
+            </header>
+            <div class="content">
+                <div id="page-dashboard" class="page active">
+                    <div class="stats-cards">
+                        <div class="stat-card primary">
+                            <div class="label">巡查点位数</div>
+                            <div class="value" id="stat-points">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="label">巡查记录数</div>
+                            <div class="value" id="stat-records">0</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="label">待整改</div>
+                            <div class="value" id="stat-pending">0</div>
+                        </div>
+                        <div class="stat-card processing">
+                            <div class="label">整改中</div>
+                            <div class="value" id="stat-processing">0</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="label">已完成</div>
+                            <div class="value" id="stat-completed">0</div>
+                        </div>
+                        <div class="stat-card primary">
+                            <div class="label">本月新增</div>
+                            <div class="value" id="stat-month">0</div>
+                        </div>
+                    </div>
+                    <div class="charts-container">
+                        <div class="chart-box full">
+                            <h3>巡查趋势</h3>
+                            <div id="chart-time" class="chart"></div>
+                        </div>
+                        <div class="chart-box">
+                            <h3>各点位问题分布</h3>
+                            <div id="chart-point" class="chart"></div>
+                        </div>
+                        <div class="chart-box">
+                            <h3>问题类型分布</h3>
+                            <div id="chart-type" class="chart"></div>
+                        </div>
+                        <div class="chart-box">
+                            <h3>整改完成率</h3>
+                            <div id="chart-rect" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-points" class="page">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>所属河道</label>
+                            <input type="text" id="filter-river" placeholder="请输入河道名称">
+                        </div>
+                        <div class="filter-group">
+                            <label>所属区域</label>
+                            <input type="text" id="filter-area" placeholder="请输入区域">
+                        </div>
+                        <div class="filter-group">
+                            <label>点位名称</label>
+                            <input type="text" id="filter-point-name" placeholder="请输入点位名称">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="pointsPage = 1; loadPoints()">查询</button>
+                            <button class="btn btn-success" onclick="openPointModal()">新增点位</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>点位名称</th>
+                                    <th>所属河道</th>
+                                    <th>所属区域</th>
+                                    <th>位置描述</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="points-table-body"></tbody>
+                        </table>
+                        <div class="pagination" id="points-pagination"></div>
+                    </div>
+                </div>
+
+                <div id="page-records" class="page">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>巡查点位</label>
+                            <select id="filter-record-point">
+                                <option value="">全部点位</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>整改状态</label>
+                            <select id="filter-record-status">
+                                <option value="">全部状态</option>
+                                <option value="pending">待整改</option>
+                                <option value="processing">整改中</option>
+                                <option value="completed">已完成</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>开始日期</label>
+                            <input type="date" id="filter-start-date">
+                        </div>
+                        <div class="filter-group">
+                            <label>结束日期</label>
+                            <input type="date" id="filter-end-date">
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="recordsPage = 1; loadRecords()">查询</button>
+                            <button class="btn btn-success" onclick="openRecordModal()">新增记录</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>巡查点位</th>
+                                    <th>巡查时间</th>
+                                    <th>巡查人员</th>
+                                    <th>问题类型</th>
+                                    <th>严重程度</th>
+                                    <th>整改状态</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="records-table-body"></tbody>
+                        </table>
+                        <div class="pagination" id="records-pagination"></div>
+                    </div>
+                </div>
+
+                <div id="page-rectification" class="page">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>整改状态</label>
+                            <select id="filter-rect-status">
+                                <option value="">全部状态</option>
+                                <option value="pending">待整改</option>
+                                <option value="processing">整改中</option>
+                                <option value="completed">已完成</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="rectPage = 1; loadRectificationRecords()">查询</button>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>巡查点位</th>
+                                    <th>问题类型</th>
+                                    <th>问题描述</th>
+                                    <th>整改状态</th>
+                                    <th>创建时间</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rect-table-body"></tbody>
+                        </table>
+                        <div class="pagination" id="rect-pagination"></div>
+                    </div>
+                </div>
+
+                <div id="page-stats" class="page">
+                    <div class="filter-bar">
+                        <div class="filter-group">
+                            <label>开始日期</label>
+                            <input type="date" id="stats-start-date">
+                        </div>
+                        <div class="filter-group">
+                            <label>结束日期</label>
+                            <input type="date" id="stats-end-date">
+                        </div>
+                        <button class="btn btn-primary" onclick="loadStatsPage()">查询</button>
+                        <button class="btn btn-success" onclick="exportData()">导出CSV</button>
+                    </div>
+                    <div class="stats-cards">
+                        <div class="stat-card">
+                            <div class="label">总记录数</div>
+                            <div class="value" id="stats-total">0</div>
+                        </div>
+                        <div class="stat-card warning">
+                            <div class="label">待整改</div>
+                            <div class="value" id="stats-pending">0</div>
+                        </div>
+                        <div class="stat-card processing">
+                            <div class="label">整改中</div>
+                            <div class="value" id="stats-processing">0</div>
+                        </div>
+                        <div class="stat-card success">
+                            <div class="label">已完成</div>
+                            <div class="value" id="stats-completed">0</div>
+                        </div>
+                        <div class="stat-card primary">
+                            <div class="label">整改完成率</div>
+                            <div class="value" id="stats-rate">0%</div>
+                        </div>
+                    </div>
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <div id="stats-time-chart" class="chart"></div>
+                        </div>
+                        <div class="chart-box">
+                            <div id="stats-point-chart" class="chart"></div>
+                        </div>
+                        <div class="chart-box full">
+                            <div id="stats-type-chart" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="point-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>巡查点位</h3>
+                <button class="modal-close" onclick="closePointModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="point-form">
+                    <input type="hidden" id="point-id">
+                    <div class="form-group">
+                        <label>点位名称 <span class="required">*</span></label>
+                        <input type="text" id="point-name" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>所属河道 <span class="required">*</span></label>
+                            <input type="text" id="point-river" required>
+                        </div>
+                        <div class="form-group">
+                            <label>所属区域</label>
+                            <input type="text" id="point-area">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>位置描述 <span class="required">*</span></label>
+                        <input type="text" id="point-location" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>经度</label>
+                            <input type="number" step="0.0000001" id="point-longitude">
+                        </div>
+                        <div class="form-group">
+                            <label>纬度</label>
+                            <input type="number" step="0.0000001" id="point-latitude">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>状态</label>
+                        <select id="point-status">
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>点位描述</label>
+                        <textarea id="point-description" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closePointModal()">取消</button>
+                <button class="btn btn-primary" onclick="savePoint()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="record-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>新增巡查记录</h3>
+                <button class="modal-close" onclick="closeRecordModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="record-form">
+                    <div class="form-group">
+                        <label>巡查点位 <span class="required">*</span></label>
+                        <select id="record-point" required></select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>巡查时间 <span class="required">*</span></label>
+                            <input type="datetime-local" id="record-inspection-time" required>
+                        </div>
+                        <div class="form-group">
+                            <label>巡查人员 <span class="required">*</span></label>
+                            <input type="text" id="record-inspector" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>问题类型 <span class="required">*</span></label>
+                            <select id="record-problem-type" required>
+                                <option value="水体污染">水体污染</option>
+                                <option value="垃圾堆放">垃圾堆放</option>
+                                <option value="非法采砂">非法采砂</option>
+                                <option value="污水排放">污水排放</option>
+                                <option value="植被破坏">植被破坏</option>
+                                <option value="违章建筑">违章建筑</option>
+                                <option value="水体富营养化">水体富营养化</option>
+                                <option value="其他">其他</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>严重程度</label>
+                            <select id="record-severity">
+                                <option value="轻微">轻微</option>
+                                <option value="一般">一般</option>
+                                <option value="严重">严重</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>问题描述 <span class="required">*</span></label>
+                        <textarea id="record-description" rows="4" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeRecordModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveRecord()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="record-detail-modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3>巡查记录详情</h3>
+                <button class="modal-close" onclick="closeRecordDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="record-detail">
+                    <div class="info">
+                        <div class="info-item">
+                            <span class="label">巡查点位</span>
+                            <span class="value" id="detail-point-name"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">巡查时间</span>
+                            <span class="value" id="detail-inspection-time"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">巡查人员</span>
+                            <span class="value" id="detail-inspector"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">问题类型</span>
+                            <span class="value" id="detail-problem-type"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">严重程度</span>
+                            <span class="value" id="detail-severity"></span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">整改状态</span>
+                            <span class="value" id="detail-status"></span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 16px;">
+                        <div class="info-item" style="display: block;">
+                            <span class="label">问题描述</span>
+                            <div class="value" id="detail-description" style="margin-top: 8px; padding: 12px; background: #fafafa; border-radius: 4px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <h3 style="margin-top: 24px; margin-bottom: 16px; font-size: 16px; font-weight: 500;">整改记录</h3>
+                <div id="detail-rectifications" class="rectification-list"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeRecordDetailModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="rectification-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>整改处理</h3>
+                <button class="modal-close" onclick="closeRectificationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="rectification-form">
+                    <input type="hidden" id="current-record-id">
+                    <div class="form-group">
+                        <label>整改措施 <span class="required">*</span></label>
+                        <textarea id="rect-measures" rows="3" required placeholder="请输入整改措施"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>整改责任人</label>
+                            <input type="text" id="rect-person" placeholder="请输入责任人">
+                        </div>
+                        <div class="form-group">
+                            <label>整改时间</label>
+                            <input type="datetime-local" id="rect-time">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>整改状态</label>
+                        <select id="rect-status">
+                            <option value="processing">整改中</option>
+                            <option value="completed">整改完成</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea id="rect-remarks" rows="2" placeholder="请输入备注信息"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" onclick="closeRectificationModal()">取消</button>
+                <button class="btn btn-primary" onclick="saveRectification()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

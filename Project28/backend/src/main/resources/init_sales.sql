@@ -1,0 +1,16 @@
+INSERT INTO sales_record (category_id, category_name, quantity, unit_price, total_amount, sales_date, remark, create_time) VALUES
+(1, 'Jian Bing', 15, 8.00, 120.00, CURDATE(), 'Morning rush hour', NOW()),
+(2, 'Shao Kao', 50, 3.00, 150.00, CURDATE(), 'Evening business', NOW()),
+(3, 'Xiaolongbao', 10, 15.00, 150.00, CURDATE(), 'Lunch time', NOW()),
+(4, 'Stinky Tofu', 20, 10.00, 200.00, CURDATE(), 'Popular tonight', NOW()),
+(5, 'Roujiamo', 12, 12.00, 144.00, CURDATE(), 'Steady sales', NOW()),
+(1, 'Jian Bing', 20, 8.00, 160.00, DATE_SUB(CURDATE(), INTERVAL 1 DAY), 'Yesterday morning', NOW()),
+(2, 'Shao Kao', 80, 3.00, 240.00, DATE_SUB(CURDATE(), INTERVAL 1 DAY), 'Yesterday evening', NOW()),
+(3, 'Xiaolongbao', 15, 15.00, 225.00, DATE_SUB(CURDATE(), INTERVAL 1 DAY), 'Yesterday lunch', NOW()),
+(4, 'Stinky Tofu', 25, 10.00, 250.00, DATE_SUB(CURDATE(), INTERVAL 1 DAY), 'Popular yesterday', NOW()),
+(6, 'Cold Noodles', 18, 8.00, 144.00, DATE_SUB(CURDATE(), INTERVAL 1 DAY), 'Hot day sales', NOW()),
+(7, 'Oyster Omelet', 8, 20.00, 160.00, DATE_SUB(CURDATE(), INTERVAL 2 DAY), 'Specialty dish', NOW()),
+(8, 'Spicy Crayfish', 5, 38.00, 190.00, DATE_SUB(CURDATE(), INTERVAL 2 DAY), 'Weekend special', NOW()),
+(1, 'Jian Bing', 18, 8.00, 144.00, DATE_SUB(CURDATE(), INTERVAL 2 DAY), 'Two days ago', NOW()),
+(2, 'Shao Kao', 60, 3.00, 180.00, DATE_SUB(CURDATE(), INTERVAL 2 DAY), 'Two days ago', NOW()),
+(5, 'Roujiamo', 15, 12.00, 180.00, DATE_SUB(CURDATE(), INTERVAL 3 DAY), 'Three days ago', NOW());

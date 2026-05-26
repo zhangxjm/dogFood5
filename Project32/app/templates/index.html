@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScoreShare - Sheet Music Sharing Platform</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo" onclick="navigateTo('home')">
+                <i class="ri-music-2-line"></i>
+                <span>ScoreShare</span>
+            </div>
+            <div class="search-bar">
+                <i class="ri-search-line"></i>
+                <input type="text" id="searchInput" placeholder="Search scores, composers..." onkeypress="handleSearchKeyPress(event)">
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" id="nav-home" onclick="navigateTo('home')">
+                    <i class="ri-home-4-line"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-btn" id="nav-favorites" onclick="navigateTo('favorites')">
+                    <i class="ri-heart-line"></i>
+                    <span>Favorites</span>
+                </button>
+                <button class="nav-btn" id="nav-categories" onclick="navigateTo('categories')">
+                    <i class="ri-folder-3-line"></i>
+                    <span>Categories</span>
+                </button>
+            </nav>
+            <button class="upload-btn" onclick="openUploadModal()">
+                <i class="ri-upload-cloud-line"></i>
+                <span>Upload</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h3>Categories</h3>
+                <div class="category-list" id="categoryList">
+                    <div class="category-item active" data-category-id="" onclick="filterByCategory('')">
+                        <i class="ri-folder-3-fill"></i>
+                        <span>All Scores</span>
+                        <span class="count" id="allCount">0</span>
+                    </div>
+                </div>
+                <button class="add-category-btn" onclick="openAddCategoryModal()">
+                    <i class="ri-add-line"></i>
+                    Add Category
+                </button>
+            </div>
+            <div class="sidebar-section">
+                <h3>Quick Stats</h3>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <i class="ri-file-music-line"></i>
+                        <span class="stat-label">Scores</span>
+                        <span class="stat-value" id="totalScores">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ri-folder-3-line"></i>
+                        <span class="stat-label">Categories</span>
+                        <span class="stat-value" id="totalCategories">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="ri-heart-line"></i>
+                        <span class="stat-label">Favorites</span>
+                        <span class="stat-value" id="totalFavorites">0</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <section class="content" id="content">
+            <div class="content-header">
+                <h2 id="contentTitle">All Scores</h2>
+                <div class="content-actions">
+                    <select id="sortSelect" onchange="sortScores()">
+                        <option value="created_at">Latest</option>
+                        <option value="views">Most Viewed</option>
+                        <option value="title">Title A-Z</option>
+                    </select>
+                </div>
+            </div>
+            <div class="score-grid" id="scoreGrid">
+            </div>
+            <div class="pagination" id="pagination">
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="uploadModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Upload Sheet Music</h3>
+                <button class="modal-close" onclick="closeModal('uploadModal')">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="uploadForm" onsubmit="handleUpload(event)">
+                    <div class="form-group">
+                        <label>Title *</label>
+                        <input type="text" id="uploadTitle" required placeholder="Enter score title">
+                    </div>
+                    <div class="form-group">
+                        <label>Composer</label>
+                        <input type="text" id="uploadComposer" placeholder="Enter composer name">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="uploadCategory">
+                            <option value="">No Category</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="uploadDescription" rows="3" placeholder="Enter description..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>File * (PDF, PNG, JPG, GIF, BMP, WEBP)</label>
+                        <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
+                            <i class="ri-upload-cloud-2-line"></i>
+                            <p>Click to upload or drag file here</p>
+                            <p class="file-hint" id="fileHint">Max size: 16MB</p>
+                        </div>
+                        <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.gif,.bmp,.webp" style="display:none" onchange="handleFileSelect(event)">
+                    </div>
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <i class="ri-upload-cloud-line"></i>
+                        Upload
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal preview-modal">
+            <div class="modal-header">
+                <div class="preview-title">
+                    <h3 id="previewTitle">Score Preview</h3>
+                    <span id="previewComposer" class="composer-name"></span>
+                </div>
+                <button class="modal-close" onclick="closeModal('previewModal')">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-info">
+                    <div class="preview-meta">
+                        <span><i class="ri-folder-3-line"></i> <span id="previewCategory"></span></span>
+                        <span><i class="ri-eye-line"></i> <span id="previewViews">0</span> views</span>
+                        <span><i class="ri-user-line"></i> <span id="previewUploader"></span></span>
+                    </div>
+                    <button class="favorite-btn" id="previewFavoriteBtn" onclick="togglePreviewFavorite()">
+                        <i class="ri-heart-line"></i>
+                        <span>Add to Favorites</span>
+                    </button>
+                </div>
+                <div class="preview-description" id="previewDescription"></div>
+                <div class="preview-content" id="previewContent">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="addCategoryModal">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3>Add Category</h3>
+                <button class="modal-close" onclick="closeModal('addCategoryModal')">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleAddCategory(event)">
+                    <div class="form-group">
+                        <label>Category Name *</label>
+                        <input type="text" id="newCategoryName" required placeholder="Enter category name">
+                    </div>
+                    <div class="form-group">
+                        <label>Icon</label>
+                        <div class="icon-selector">
+                            <button type="button" class="icon-option active" data-icon="folder" onclick="selectIcon('folder')">
+                                <i class="ri-folder-3-line"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="music" onclick="selectIcon('music')">
+                                <i class="ri-music-2-line"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="star" onclick="selectIcon('star')">
+                                <i class="ri-star-line"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="heart" onclick="selectIcon('heart')">
+                                <i class="ri-heart-line"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="book" onclick="selectIcon('book')">
+                                <i class="ri-book-line"></i>
+                            </button>
+                            <button type="button" class="icon-option" data-icon="mic" onclick="selectIcon('mic')">
+                                <i class="ri-mic-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">
+                        <i class="ri-add-line"></i>
+                        Create Category
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

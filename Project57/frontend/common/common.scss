@@ -1,0 +1,87 @@
+.container {
+  padding: 20rpx;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 16rpx;
+}
+
+.subtitle {
+  font-size: 28rpx;
+  color: #666666;
+  margin-bottom: 12rpx;
+}
+
+.price {
+  font-size: 32rpx;
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+.btn-primary {
+  background-color: #ff6b6b;
+  color: #ffffff;
+  border-radius: 40rpx;
+  padding: 20rpx 40rpx;
+  text-align: center;
+  font-size: 30rpx;
+}
+
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: #333333;
+  border-radius: 40rpx;
+  padding: 20rpx 40rpx;
+  text-align: center;
+  font-size: 30rpx;
+}
+
+.tag {
+  display: inline-block;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  margin-right: 12rpx;
+}
+
+.tag-active {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.tag-pending {
+  background-color: #fff3e0;
+  color: #ff9800;
+}
+
+.tag-absent {
+  background-color: #ffebee;
+  color: #f44336;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333333;
+  margin: 24rpx 0 16rpx 0;
+  padding-left: 20rpx;
+  border-left: 6rpx solid #ff6b6b;
+}
+
+.empty {
+  text-align: center;
+  padding: 80rpx 0;
+  color: #999999;
+  font-size: 28rpx;
+}

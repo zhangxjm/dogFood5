@@ -1,0 +1,91 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "Fresh Orchard",
+        "navigationBarBackgroundColor": "#4CAF50",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/reserve/reserve",
+      "style": {
+        "navigationBarTitleText": "Make Reservation",
+        "navigationBarBackgroundColor": "#4CAF50",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/my-reservation/my-reservation",
+      "style": {
+        "navigationBarTitleText": "My Reservations",
+        "navigationBarBackgroundColor": "#4CAF50",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/verify/verify",
+      "style": {
+        "navigationBarTitleText": "Verify Entry",
+        "navigationBarBackgroundColor": "#4CAF50",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/category/category",
+      "style": {
+        "navigationBarTitleText": "Picking Categories",
+        "navigationBarBackgroundColor": "#4CAF50",
+        "navigationBarTextStyle": "white"
+      }
+    },
+    {
+      "path": "pages/category-detail/category-detail",
+      "style": {
+        "navigationBarTitleText": "Category Detail",
+        "navigationBarBackgroundColor": "#4CAF50",
+        "navigationBarTextStyle": "white"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "Orchard",
+    "navigationBarBackgroundColor": "#4CAF50",
+    "backgroundColor": "#F5F5F5"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4CAF50",
+    "borderStyle": "black",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "Home",
+        "iconPath": "static/tab-home.png",
+        "selectedIconPath": "static/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/reserve/reserve",
+        "text": "Reserve",
+        "iconPath": "static/tab-reserve.png",
+        "selectedIconPath": "static/tab-reserve-active.png"
+      },
+      {
+        "pagePath": "pages/verify/verify",
+        "text": "Verify",
+        "iconPath": "static/tab-verify.png",
+        "selectedIconPath": "static/tab-verify-active.png"
+      },
+      {
+        "pagePath": "pages/category/category",
+        "text": "Categories",
+        "iconPath": "static/tab-category.png",
+        "selectedIconPath": "static/tab-category-active.png"
+      }
+    ]
+  },
+  "uniIdRouter": {}
+}

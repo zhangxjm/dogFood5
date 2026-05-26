@@ -1,0 +1,289 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+}
+
+.statsSection {
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.statsTitle {
+  font-size: $font-size-md;
+  color: #fff;
+  margin-bottom: 24rpx;
+}
+
+.statsRow {
+  display: flex;
+  justify-content: space-around;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statValue {
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-bold;
+  color: #fff;
+  margin-bottom: 8rpx;
+}
+
+.statLabel {
+  font-size: $font-size-sm;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.calendarSection {
+  background: $color-bg-card;
+  margin: 0 32rpx 24rpx;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+}
+
+.calendarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.monthText {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+}
+
+.navBtn {
+  @include button-reset;
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: $radius-round;
+  background: $color-bg-page;
+  color: $color-text-secondary;
+  font-size: $font-size-lg;
+  transition: all $transition-base;
+
+  &:active {
+    background: $color-border;
+  }
+}
+
+.weekRow {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+
+.weekDay {
+  flex: 1;
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  padding: 12rpx 0;
+}
+
+.daysGrid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dayCell {
+  width: 14.28%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.7;
+  }
+}
+
+.dayContent {
+  width: 64rpx;
+  height: 64rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-round;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+
+  &.today {
+    background: $color-primary;
+    color: #fff;
+    font-weight: $font-weight-semibold;
+  }
+
+  &.hasRecord {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 8rpx;
+      width: 8rpx;
+      height: 8rpx;
+      border-radius: 50%;
+      background: $color-success;
+    }
+  }
+}
+
+.emptyCell {
+  width: 14.28%;
+  aspect-ratio: 1;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 32rpx;
+  margin-top: 24rpx;
+  padding-top: 24rpx;
+  border-top: 1rpx solid $color-border;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.legendDot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+
+  &.present {
+    background: $color-success;
+  }
+
+  &.absent {
+    background: $color-error;
+  }
+
+  &.leave {
+    background: $color-warning;
+  }
+
+  &.late {
+    background: #1677FF;
+  }
+}
+
+.recordSection {
+  padding: 0 32rpx 32rpx;
+}
+
+.sectionTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: 20rpx;
+}
+
+.recordList {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.recordCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: 24rpx;
+  box-shadow: $shadow-card;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.recordInfo {
+  flex: 1;
+}
+
+.courseName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: 8rpx;
+}
+
+.recordMeta {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.recordStatus {
+  padding: 8rpx 20rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+
+  &.present {
+    background: #E8FFEA;
+    color: $color-success;
+  }
+
+  &.absent {
+    background: #FFEBE8;
+    color: $color-error;
+  }
+
+  &.leave {
+    background: #FFF7E6;
+    color: $color-warning;
+  }
+
+  &.late {
+    background: #E8F4FF;
+    color: #1677FF;
+  }
+}
+
+.checkInBtn {
+  @include button-reset;
+  width: 100%;
+  height: $button-height-lg;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: #fff;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  border-radius: $radius-button;
+  margin: 0 32rpx 32rpx;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    background: $color-text-tertiary;
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80rpx 32rpx;
+}
+
+.emptyIcon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}

@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: scoreshare-web
+    ports:
+      - "5000:5000"
+    volumes:
+      - upload_data:/app/app/static/uploads
+      - db_data:/app
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=prod-secret-key-change-in-production
+    restart: unless-stopped
+
+volumes:
+  upload_data:
+    driver: local
+  db_data:
+    driver: local

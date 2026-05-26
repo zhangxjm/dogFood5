@@ -1,0 +1,28 @@
+{
+  "name": "orchard-miniapp",
+  "version": "1.0.0",
+  "description": "Orchard Reservation Miniapp",
+  "main": "main.js",
+  "scripts": {
+    "dev:mp-weixin": "cross-env NODE_ENV=development UNI_PLATFORM=mp-weixin vue-cli-service uni-build --watch",
+    "build:mp-weixin": "cross-env NODE_ENV=production UNI_PLATFORM=mp-weixin vue-cli-service uni-build",
+    "dev:h5": "cross-env NODE_ENV=development UNI_PLATFORM=h5 vue-cli-service uni-serve",
+    "build:h5": "cross-env NODE_ENV=production UNI_PLATFORM=h5 vue-cli-service uni-build"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "^2.0.2-3090920230817001",
+    "@dcloudio/uni-h5": "^2.0.2-3090920230817001",
+    "@dcloudio/uni-mp-weixin": "^2.0.2-3090920230817001",
+    "vue": "^2.6.11"
+  },
+  "devDependencies": {
+    "@dcloudio/types": "^0.0.20",
+    "@dcloudio/uni-automator": "^2.0.2-3090920230817001",
+    "@dcloudio/uni-cli-shared": "^2.0.2-3090920230817001",
+    "@dcloudio/uni-stacktracey": "^2.0.2-3090920230817001",
+    "@vue/cli-service": "^4.5.0",
+    "cross-env": "^7.0.3",
+    "sass": "^1.49.0",
+    "sass-loader": "^10.1.1"
+  }
+}

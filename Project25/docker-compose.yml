@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: art-lesson-db
+    environment:
+      POSTGRES_USER: art_user
+      POSTGRES_PASSWORD: art_pass_2024
+      POSTGRES_DB: art_lesson
+    ports:
+      - "0:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U art_user -d art_lesson"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: art-lesson-backend
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: art_user
+      DB_PASSWORD: art_pass_2024
+      DB_NAME: art_lesson
+      BACKEND_PORT: 5000
+    ports:
+      - "0:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: art-lesson-frontend
+    ports:
+      - "0:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:

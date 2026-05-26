@@ -1,0 +1,105 @@
+<% pageTitle = '活动列表'; activeNav = 'activities'; %>
+<%- include('../partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="mb-0"><i class="bi bi-calendar-event"></i> 活动列表</h3>
+  <a href="/activities/new" class="btn btn-primary">
+    <i class="bi bi-plus-circle"></i> 发布活动
+  </a>
+</div>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form method="GET" action="/activities" class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label small">活动状态</label>
+        <select name="status" class="form-select form-select-sm">
+          <option value="">全部状态</option>
+          <option value="upcoming" <%= filters.status === 'upcoming' ? 'selected' : '' %>>即将开始</option>
+          <option value="ongoing" <%= filters.status === 'ongoing' ? 'selected' : '' %>>进行中</option>
+          <option value="completed" <%= filters.status === 'completed' ? 'selected' : '' %>>已结束</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small">活动类别</label>
+        <select name="category" class="form-select form-select-sm">
+          <option value="">全部类别</option>
+          <option value="文娱活动" <%= filters.category === '文娱活动' ? 'selected' : '' %>>文娱活动</option>
+          <option value="健身活动" <%= filters.category === '健身活动' ? 'selected' : '' %>>健身活动</option>
+          <option value="健康讲座" <%= filters.category === '健康讲座' ? 'selected' : '' %>>健康讲座</option>
+          <option value="节庆活动" <%= filters.category === '节庆活动' ? 'selected' : '' %>>节庆活动</option>
+          <option value="技能培训" <%= filters.category === '技能培训' ? 'selected' : '' %>>技能培训</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <button type="submit" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-funnel"></i> 筛选
+        </button>
+        <a href="/activities" class="btn btn-sm btn-outline-secondary">
+          <i class="bi bi-arrow-counterclockwise"></i> 重置
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<% if (activities.length === 0) { %>
+<div class="text-center py-5">
+  <i class="bi bi-inbox display-1 text-muted"></i>
+  <p class="text-muted mt-3">暂无符合条件的活动</p>
+</div>
+<% } else { %>
+<div class="row g-4">
+  <% activities.forEach(function(a) { %>
+    <% var isFull = a.registered_count >= a.max_participants; %>
+    <% var fillRate = Math.round(a.registered_count / a.max_participants * 100); %>
+    <% var statusClass = a.status === 'upcoming' ? 'bg-info' : a.status === 'ongoing' ? 'bg-warning' : 'bg-secondary'; %>
+    <% var statusText = a.status === 'upcoming' ? '即将开始' : a.status === 'ongoing' ? '进行中' : '已结束'; %>
+    <% var headerClass = a.status === 'upcoming' ? 'bg-info bg-opacity-10' : a.status === 'ongoing' ? 'bg-warning bg-opacity-10' : 'bg-secondary bg-opacity-10'; %>
+  <div class="col-md-6 col-lg-4">
+    <div class="card card-activity shadow-sm h-100">
+      <div class="card-header <%= headerClass %>">
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="category-tag"><%= a.category %></span>
+          <span class="badge status-badge <%= statusClass %>"><%= statusText %></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <h5 class="card-title mb-3"><%= a.title %></h5>
+        <p class="card-text text-muted small mb-3" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"><%= a.description || '暂无活动描述' %></p>
+        <div class="activity-meta mb-2">
+          <i class="bi bi-geo-alt"></i><%= a.location %>
+        </div>
+        <div class="activity-meta mb-3">
+          <i class="bi bi-calendar3"></i><%= a.activity_date %> <%= a.start_time %>-<%= a.end_time %>
+        </div>
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small mb-1">
+            <span class="text-muted">报名进度</span>
+            <span class="<%= isFull ? 'text-danger' : 'text-success' %>"><%= a.registered_count %>/<%= a.max_participants %>人</span>
+          </div>
+          <div class="progress progress-mini">
+            <div class="progress-bar <%= isFull ? 'bg-danger' : 'bg-success' %>" style="width: <%= fillRate %>%"></div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/activities/<%= a.id %>" class="btn btn-sm btn-outline-primary flex-grow-1">
+            <i class="bi bi-eye"></i> 详情
+          </a>
+          <% if (a.status !== 'completed') { %>
+          <a href="/activities/<%= a.id %>/edit" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-pencil"></i>
+          </a>
+          <button onclick="confirmDelete('/activities/<%= a.id %>', '确定要删除这个活动吗？')" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i>
+          </button>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% }); %>
+</div>
+<% } %>
+
+<%- include('../partials/footer') %>

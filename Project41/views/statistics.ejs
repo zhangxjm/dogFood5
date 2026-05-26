@@ -1,0 +1,198 @@
+<% pageTitle = '统计分析'; activeNav = 'statistics'; %>
+<%- include('partials/header') %>
+
+<h3 class="mb-4"><i class="bi bi-bar-chart"></i> 统计分析</h3>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-3 col-6">
+    <div class="card stat-card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon bg-primary bg-opacity-10 text-primary me-3">
+            <i class="bi bi-calendar-event"></i>
+          </div>
+          <div>
+            <div class="text-muted small">活动总数</div>
+            <div class="fs-3 fw-bold"><%= overallStats.total_activities || 0 %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card stat-card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon bg-success bg-opacity-10 text-success me-3">
+            <i class="bi bi-people"></i>
+          </div>
+          <div>
+            <div class="text-muted small">参与总人次</div>
+            <div class="fs-3 fw-bold"><%= overallStats.total_registrations || 0 %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card stat-card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon bg-warning bg-opacity-10 text-warning me-3">
+            <i class="bi bi-person-badge"></i>
+          </div>
+          <div>
+            <div class="text-muted small">独立参与人数</div>
+            <div class="fs-3 fw-bold"><%= overallStats.total_participants || 0 %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-6">
+    <div class="card stat-card shadow-sm">
+      <div class="card-body">
+        <div class="d-flex align-items-center">
+          <div class="stat-icon bg-info bg-opacity-10 text-info me-3">
+            <i class="bi bi-calculator"></i>
+          </div>
+          <div>
+            <div class="text-muted small">平均年龄</div>
+            <div class="fs-3 fw-bold"><%= overallStats.avg_age ? overallStats.avg_age.toFixed(1) : '-' %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary bg-opacity-10">
+        <h5 class="mb-0"><i class="bi bi-pie-chart"></i> 活动状态分布</h5>
+      </div>
+      <div class="card-body">
+        <% var totalStatus = statusStats.reduce(function(s, i) { return s + i.count; }, 0); %>
+        <% if (totalStatus === 0) { %>
+        <p class="text-muted text-center py-4">暂无数据</p>
+        <% } else { %>
+        <div class="d-flex flex-column gap-3">
+          <% statusStats.forEach(function(s) { %>
+            <% var pct = totalStatus > 0 ? Math.round(s.count / totalStatus * 100) : 0; %>
+            <% var statusLabel = s.status === 'upcoming' ? '即将开始' : s.status === 'ongoing' ? '进行中' : '已结束'; %>
+            <% var statusColor = s.status === 'upcoming' ? '#0dcaf0' : s.status === 'ongoing' ? '#ffc107' : '#6c757d'; %>
+          <div>
+            <div class="d-flex justify-content-between mb-1">
+              <span><%= statusLabel %></span>
+              <span class="fw-semibold"><%= s.count %> 场 (<%= pct %>%)</span>
+            </div>
+            <div class="progress" style="height: 12px;">
+              <div class="progress-bar" style="width: <%= pct %>%; background-color: <%= statusColor %>;"></div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-success bg-opacity-10">
+        <h5 class="mb-0"><i class="bi bi-gender-ambiguous"></i> 参与人员性别分布</h5>
+      </div>
+      <div class="card-body">
+        <% var totalGender = genderDist.reduce(function(s, i) { return s + i.count; }, 0); %>
+        <% if (totalGender === 0) { %>
+        <p class="text-muted text-center py-4">暂无数据</p>
+        <% } else { %>
+        <div class="d-flex flex-column gap-3">
+          <% genderDist.forEach(function(g) { %>
+            <% var pct = totalGender > 0 ? Math.round(g.count / totalGender * 100) : 0; %>
+            <% var genderColor = g.gender === 'male' ? '#0d6efd' : '#d63384'; %>
+            <% var genderLabel = g.gender === 'male' ? '男性' : '女性'; %>
+            <% var genderIcon = g.gender === 'male' ? 'bi-gender-male' : 'bi-gender-female'; %>
+          <div>
+            <div class="d-flex justify-content-between mb-1">
+              <span><i class="bi <%= genderIcon %>"></i> <%= genderLabel %></span>
+              <span class="fw-semibold"><%= g.count %> 人 (<%= pct %>%)</span>
+            </div>
+            <div class="progress" style="height: 12px;">
+              <div class="progress-bar" style="width: <%= pct %>%; background-color: <%= genderColor %>;"></div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-warning bg-opacity-10">
+        <h5 class="mb-0"><i class="bi bi-tags"></i> 活动类别统计</h5>
+      </div>
+      <div class="card-body">
+        <% if (categoryStats.length === 0) { %>
+        <p class="text-muted text-center py-4">暂无数据</p>
+        <% } else { %>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead>
+              <tr>
+                <th>活动类别</th>
+                <th class="text-center">活动数量</th>
+                <th class="text-center">报名人次</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% categoryStats.forEach(function(c) { %>
+              <tr>
+                <td><%= c.category %></td>
+                <td class="text-center"><span class="badge bg-primary"><%= c.activity_count %></span></td>
+                <td class="text-center"><span class="badge bg-success"><%= c.registration_count %></span></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-info bg-opacity-10">
+        <h5 class="mb-0"><i class="bi bi-graph-up"></i> 报名人数TOP10</h5>
+      </div>
+      <div class="card-body">
+        <% if (activityStats.length === 0) { %>
+        <p class="text-muted text-center py-4">暂无数据</p>
+        <% } else { %>
+        <div class="d-flex flex-column gap-2">
+          <% activityStats.forEach(function(a, idx) { %>
+          <div class="d-flex align-items-center gap-2">
+            <span class="badge <%= idx < 3 ? 'bg-warning' : 'bg-secondary' %>" style="width: 28px;"><%= idx + 1 %></span>
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-center">
+                <small class="text-truncate" style="max-width: 200px;" title="<%= a.title %>"><%= a.title %></small>
+                <small class="text-muted"><%= a.registered_count %>/<%= a.max_participants %></small>
+              </div>
+              <div class="progress" style="height: 4px;">
+                <div class="progress-bar <%= a.fill_rate >= 100 ? 'bg-danger' : 'bg-primary' %>" style="width: <%= Math.min(a.fill_rate, 100) %>%"></div>
+              </div>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

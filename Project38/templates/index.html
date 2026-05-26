@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">五金小店商品台账管理系统</h1>
+            <ul class="nav-menu">
+                <li><a href="/">货品列表</a></li>
+                <li><a href="/products/new">新增货品</a></li>
+                <li><a href="/stock">库存管理</a></li>
+                <li><a href="/logs">操作日志</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container">
+        <div class="page-header">
+            <h2>货品列表</h2>
+        </div>
+
+        <div class="filter-bar">
+            <select id="categoryFilter">
+                <option value="">所有类别</option>
+                <option value="工具">工具</option>
+                <option value="电动工具">电动工具</option>
+                <option value="耗材">耗材</option>
+                <option value="管材">管材</option>
+            </select>
+            <input type="text" id="searchInput" placeholder="搜索货品名称...">
+            <label>
+                <input type="checkbox" id="alertOnly">
+                仅显示缺货提醒
+            </label>
+            <button onclick="loadProducts()">搜索</button>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名称</th>
+                        <th>类别</th>
+                        <th>单位</th>
+                        <th>库存</th>
+                        <th>最低库存</th>
+                        <th>进货价</th>
+                        <th>售价</th>
+                        <th>供应商</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="productTable">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3 id="modalTitle">操作</h3>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

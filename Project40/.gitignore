@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+calligraphy.db
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.gif
+!uploads/.gitkeep
+.venv/
+venv/

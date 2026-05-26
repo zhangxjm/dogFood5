@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">五金小店商品台账管理系统</h1>
+            <ul class="nav-menu">
+                <li><a href="/">货品列表</a></li>
+                <li><a href="/products/new">新增货品</a></li>
+                <li><a href="/stock">库存管理</a></li>
+                <li><a href="/logs">操作日志</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container">
+        <div class="page-header">
+            <h2>操作日志</h2>
+        </div>
+
+        <div class="filter-bar">
+            <select id="logTypeFilter">
+                <option value="">所有类型</option>
+                <option value="进货">进货</option>
+                <option value="销售">销售</option>
+            </select>
+            <input type="date" id="startDate">
+            <span>至</span>
+            <input type="date" id="endDate">
+            <button onclick="loadLogs()">查询</button>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-card">
+                <span class="stat-label">进货总数</span>
+                <span class="stat-value" id="totalIn">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">销售总数</span>
+                <span class="stat-value" id="totalOut">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">进货金额</span>
+                <span class="stat-value" id="totalInAmount">¥0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">销售金额</span>
+                <span class="stat-value" id="totalOutAmount">¥0</span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>时间</th>
+                        <th>货品</th>
+                        <th>类型</th>
+                        <th>数量</th>
+                        <th>单价</th>
+                        <th>总价</th>
+                        <th>操作员</th>
+                        <th>备注</th>
+                    </tr>
+                </thead>
+                <tbody id="logTable">
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        loadLogs();
+    </script>
+</body>
+</html>

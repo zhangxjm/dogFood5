@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>少儿绘画课时记录系统</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🎨</span>
+                <h1>少儿绘画课时记录系统</h1>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-page="dashboard">仪表盘</button>
+                <button class="nav-btn" data-page="students">学员管理</button>
+                <button class="nav-btn" data-page="courses">课程管理</button>
+                <button class="nav-btn" data-page="schedule">课程排班</button>
+                <button class="nav-btn" data-page="records">上课记录</button>
+            </nav>
+        </header>
+
+        <main class="main">
+            <div id="page-dashboard" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">👨‍🎓</div>
+                        <div class="stat-info">
+                            <h3>学员总数</h3>
+                            <p id="stat-students">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">📚</div>
+                        <div class="stat-info">
+                            <h3>总课时</h3>
+                            <p id="stat-total-hours">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">✅</div>
+                        <div class="stat-info">
+                            <h3>已用课时</h3>
+                            <p id="stat-used-hours">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">⏰</div>
+                        <div class="stat-info">
+                            <h3>剩余课时</h3>
+                            <p id="stat-remaining-hours">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="panel">
+                        <h2>⚠️ 课时预警</h2>
+                        <div class="warning-list" id="warning-list">
+                            <p class="empty-tip">暂无课时预警</p>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h2>📅 今日课程</h2>
+                        <div class="today-schedule" id="today-schedule">
+                            <p class="empty-tip">今日暂无课程</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-students" class="page">
+                <div class="page-header">
+                    <h2>学员管理</h2>
+                    <button class="btn-primary" onclick="openStudentModal()">+ 添加学员</button>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>姓名</th>
+                                <th>性别</th>
+                                <th>年龄</th>
+                                <th>家长</th>
+                                <th>联系电话</th>
+                                <th>总课时</th>
+                                <th>已用课时</th>
+                                <th>剩余课时</th>
+                                <th>入学日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="page-courses" class="page">
+                <div class="page-header">
+                    <h2>课程管理</h2>
+                    <button class="btn-primary" onclick="openCourseModal()">+ 添加课程</button>
+                </div>
+                <div class="courses-grid" id="courses-grid">
+                </div>
+            </div>
+
+            <div id="page-schedule" class="page">
+                <div class="page-header">
+                    <h2>课程排班</h2>
+                    <button class="btn-primary" onclick="openScheduleModal()">+ 添加排班</button>
+                </div>
+                <div class="schedule-container">
+                    <div class="week-schedule">
+                        <div class="schedule-header">
+                            <div class="schedule-cell time-header">时间</div>
+                            <div class="schedule-cell">周一</div>
+                            <div class="schedule-cell">周二</div>
+                            <div class="schedule-cell">周三</div>
+                            <div class="schedule-cell">周四</div>
+                            <div class="schedule-cell">周五</div>
+                            <div class="schedule-cell">周六</div>
+                            <div class="schedule-cell">周日</div>
+                        </div>
+                        <div class="schedule-body" id="schedule-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="page-records" class="page">
+                <div class="page-header">
+                    <h2>上课记录</h2>
+                    <button class="btn-primary" onclick="openRecordModal()">+ 登记上课</button>
+                </div>
+                <div class="filter-bar">
+                    <select id="filter-student" onchange="loadRecords()">
+                        <option value="">全部学员</option>
+                    </select>
+                    <input type="date" id="filter-date" onchange="loadRecords()">
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>上课日期</th>
+                                <th>学员</th>
+                                <th>课程</th>
+                                <th>开始时间</th>
+                                <th>结束时间</th>
+                                <th>课时</th>
+                                <th>备注</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="records-table-body">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal" id="student-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="student-modal-title">添加学员</h3>
+                <span class="close" onclick="closeModal('student-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="student-form">
+                    <input type="hidden" id="student-id">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>姓名</label>
+                            <input type="text" id="student-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>性别</label>
+                            <select id="student-gender" required>
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>年龄</label>
+                            <input type="number" id="student-age" min="3" max="18" required>
+                        </div>
+                        <div class="form-group">
+                            <label>家长姓名</label>
+                            <input type="text" id="student-parent" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>联系电话</label>
+                            <input type="tel" id="student-phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>总课时</label>
+                            <input type="number" id="student-total-hours" min="1" value="20" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>入学日期</label>
+                        <input type="date" id="student-enrollment-date" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="course-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="course-modal-title">添加课程</h3>
+                <span class="close" onclick="closeModal('course-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="course-form">
+                    <input type="hidden" id="course-id">
+                    <div class="form-group">
+                        <label>课程名称</label>
+                        <input type="text" id="course-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>课程描述</label>
+                        <textarea id="course-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>课程颜色</label>
+                        <input type="color" id="course-color" value="#1890ff">
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="schedule-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加排班</h3>
+                <span class="close" onclick="closeModal('schedule-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="schedule-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>学员</label>
+                            <select id="schedule-student" required>
+                                <option value="">请选择学员</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>课程</label>
+                            <select id="schedule-course" required>
+                                <option value="">请选择课程</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>星期</label>
+                            <select id="schedule-day" required>
+                                <option value="1">周一</option>
+                                <option value="2">周二</option>
+                                <option value="3">周三</option>
+                                <option value="4">周四</option>
+                                <option value="5">周五</option>
+                                <option value="6">周六</option>
+                                <option value="0">周日</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>开始时间</label>
+                            <input type="time" id="schedule-start" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>结束时间</label>
+                            <input type="time" id="schedule-end" required>
+                        </div>
+                        <div class="form-group">
+                            <label>课时</label>
+                            <input type="number" id="schedule-hours" min="1" max="4" value="1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>开始日期</label>
+                            <input type="date" id="schedule-start-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>结束日期</label>
+                            <input type="date" id="schedule-end-date">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="record-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>登记上课</h3>
+                <span class="close" onclick="closeModal('record-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="record-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>学员</label>
+                            <select id="record-student" required onchange="updateStudentCourses()">
+                                <option value="">请选择学员</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>课程</label>
+                            <select id="record-course" required>
+                                <option value="">请选择课程</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>上课日期</label>
+                            <input type="date" id="record-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>课时</label>
+                            <input type="number" id="record-hours" min="1" max="4" value="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>开始时间</label>
+                            <input type="time" id="record-start" required>
+                        </div>
+                        <div class="form-group">
+                            <label>结束时间</label>
+                            <input type="time" id="record-end" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>备注</label>
+                        <textarea id="record-notes" rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">保存</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  parking-app:
+    build: .
+    container_name: parking-management
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+      - parking-data:/app/instance
+    restart: unless-stopped
+
+volumes:
+  parking-data:

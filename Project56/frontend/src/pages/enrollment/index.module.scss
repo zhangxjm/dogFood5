@@ -1,0 +1,222 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+}
+
+.tabBar {
+  display: flex;
+  background: $color-bg-card;
+  border-bottom: 1rpx solid $color-border;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.tabItem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 0;
+  font-size: $font-size-md;
+  color: $color-text-secondary;
+  position: relative;
+
+  &.active {
+    color: $color-primary;
+    font-weight: $font-weight-semibold;
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48rpx;
+      height: 6rpx;
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+      border-radius: 3rpx;
+    }
+  }
+}
+
+.enrollmentList {
+  padding: 24rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.enrollmentCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid $color-border;
+}
+
+.statusBadge {
+  padding: 8rpx 20rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+
+  &.pending {
+    background: #FFF7E6;
+    color: $color-warning;
+  }
+
+  &.paid {
+    background: #E8FFEA;
+    color: $color-success;
+  }
+
+  &.completed {
+    background: #E8F4FF;
+    color: #1677FF;
+  }
+
+  &.cancelled {
+    background: #F5F5F5;
+    color: $color-text-tertiary;
+  }
+}
+
+.orderNo {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.cardBody {
+  display: flex;
+  gap: 20rpx;
+  padding: 24rpx;
+}
+
+.courseImage {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: $radius-md;
+  flex-shrink: 0;
+}
+
+.courseInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.courseName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: 12rpx;
+  @include text-ellipsis;
+}
+
+.scheduleInfo {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: 8rpx;
+}
+
+.childInfo {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx 24rpx;
+  border-top: 1rpx solid $color-border;
+  background: #FAFAFA;
+}
+
+.amount {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+
+  .price {
+    font-size: $font-size-lg;
+    font-weight: $font-weight-semibold;
+    color: $color-price;
+    margin-left: 8rpx;
+  }
+}
+
+.actionBtn {
+  @include button-reset;
+  padding: 0 28rpx;
+  height: $button-height-sm;
+  font-size: $font-size-sm;
+  border-radius: $radius-button;
+  margin-left: 16rpx;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.95);
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    color: #fff;
+  }
+
+  &.secondary {
+    background: #F5F5F5;
+    color: $color-text-secondary;
+    border: 1rpx solid $color-border;
+  }
+}
+
+.actionBtns {
+  display: flex;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 32rpx;
+}
+
+.emptyIcon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+  margin-bottom: 32rpx;
+}
+
+.goBtn {
+  @include button-reset;
+  padding: 0 48rpx;
+  height: $button-height-md;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: #fff;
+  font-size: $font-size-md;
+  border-radius: $radius-button;
+  font-weight: $font-weight-medium;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.95);
+  }
+}

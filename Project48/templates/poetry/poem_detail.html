@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ poem.title }} - 诗词赏析分享平台{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card poem-card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h2 class="card-title">{{ poem.title }}</h2>
+                        <p class="card-subtitle text-muted">
+                            {{ poem.author }}
+                            <span class="dynasty-badge ms-2">{{ poem.dynasty }}</span>
+                            <span class="category-badge ms-2">
+                                <a href="{% url 'category_detail' poem.category.pk %}" class="text-white text-decoration-none">{{ poem.category.name }}</a>
+                            </span>
+                        </p>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div>
+                        <a href="{% url 'appreciation_create_for_poem' poem.pk %}" class="btn btn-primary btn-sm">写赏析</a>
+                        {% if user == poem.created_by or user.is_superuser %}
+                        <a href="{% url 'poem_edit' poem.pk %}" class="btn btn-outline-secondary btn-sm">编辑</a>
+                        <a href="{% url 'poem_delete' poem.pk %}" class="btn btn-outline-danger btn-sm">删除</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <hr>
+
+                <div class="poem-content fs-5 lh-lg text-center py-4">
+                    {{ poem.content }}
+                </div>
+
+                <hr>
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <small class="text-muted">
+                        录入人：{{ poem.created_by.username|default:"未知" }} | 
+                        录入时间：{{ poem.created_at|date:"Y-m-d H:i" }} | 
+                        浏览：{{ poem.views }}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        {% if poem.appreciations.all %}
+        <div class="mb-4">
+            <h4 class="mb-3">诗词赏析 ({{ poem.appreciation_count }})</h4>
+            {% for appreciation in poem.appreciations.all %}
+            <div class="card appreciation-card card-hover mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'appreciation_detail' appreciation.pk %}" class="text-decoration-none">{{ appreciation.title }}</a>
+                    </h5>
+                    <p class="card-text">{{ appreciation.content|truncatechars:150 }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ appreciation.author.username }} | {{ appreciation.created_at|date:"Y-m-d" }}</small>
+                        <div>
+                            <span class="badge bg-success">点赞 {{ appreciation.likes }}</span>
+                            <span class="badge bg-info">评论 {{ appreciation.comments.count }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="mb-4">
+            <h4 class="mb-3">用户评论 ({{ poem.comment_count }})</h4>
+            {% if user.is_authenticated %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">发表评论</label>
+                            {{ form.content }}
+                        </div>
+                        <button type="submit" class="btn btn-primary">发表评论</button>
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-info">
+                请 <a href="{% url 'login' %}">登录</a> 后发表评论
+            </div>
+            {% endif %}
+
+            {% for comment in comments %}
+            <div class="card comment-card mb-2">
+                <div class="card-body py-2">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong>{{ comment.user.username }}</strong>
+                            <small class="text-muted ms-2">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                        </div>
+                        {% if user == comment.user or user.is_superuser %}
+                        <a href="{% url 'comment_delete' comment.pk %}" class="btn btn-sm btn-outline-danger">删除</a>
+                        {% endif %}
+                    </div>
+                    <p class="mb-0 mt-1">{{ comment.content }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">暂无评论，快来发表第一条评论吧！</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">快捷操作</h5>
+            </div>
+            <div class="card-body">
+                {% if user.is_authenticated %}
+                <div class="d-grid gap-2">
+                    <a href="{% url 'poem_create' %}" class="btn btn-primary">录入新诗词</a>
+                    <a href="{% url 'appreciation_create' %}" class="btn btn-success">撰写赏析</a>
+                    <a href="{% url 'category_create' %}" class="btn btn-info">创建分类</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

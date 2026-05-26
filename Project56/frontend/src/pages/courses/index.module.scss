@@ -1,0 +1,177 @@
+@use '@/styles/variables.scss' as *;
+
+.page {
+  min-height: 100vh;
+  background-color: $color-bg-page;
+}
+
+.categoryScroll {
+  background: $color-bg-card;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid $color-border;
+  @include scroll-x-container;
+  padding-left: 32rpx;
+}
+
+.categoryItem {
+  @include scroll-x-item(auto);
+  display: inline-flex;
+  padding: 16rpx 32rpx;
+  margin-right: 16rpx;
+  border-radius: $radius-button;
+  font-size: $font-size-sm;
+  background: $color-bg-page;
+  color: $color-text-secondary;
+  white-space: nowrap;
+
+  &.active {
+    background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    color: #fff;
+    font-weight: $font-weight-medium;
+  }
+
+  &:last-child {
+    margin-right: 32rpx;
+  }
+}
+
+.courseList {
+  padding: 24rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.courseCard {
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: $shadow-card-hover;
+  }
+}
+
+.courseHeader {
+  position: relative;
+}
+
+.courseImage {
+  width: 100%;
+  height: 320rpx;
+}
+
+.teacherBadge {
+  position: absolute;
+  top: 16rpx;
+  right: 16rpx;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 8rpx 16rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+}
+
+.courseBody {
+  padding: 24rpx;
+}
+
+.courseTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: 12rpx;
+}
+
+.courseMeta {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.courseTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+}
+
+.tag {
+  padding: 4rpx 12rpx;
+  border-radius: $radius-xs;
+  font-size: $font-size-xs;
+  background: $color-tag-bg;
+  color: $color-primary;
+}
+
+.courseFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 16rpx;
+  border-top: 1rpx solid $color-border;
+}
+
+.priceInfo {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+}
+
+.price {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-price;
+}
+
+.originalPrice {
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+  text-decoration: line-through;
+}
+
+.enrollBtn {
+  @include button-reset;
+  padding: 0 32rpx;
+  height: $button-height-md;
+  background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+  color: #fff;
+  font-size: $font-size-sm;
+  border-radius: $radius-button;
+  font-weight: $font-weight-medium;
+  transition: all $transition-base;
+
+  &:active {
+    opacity: 0.85;
+    transform: scale(0.95);
+  }
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 32rpx;
+}
+
+.emptyIcon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+}

@@ -1,0 +1,137 @@
+<div class="container">
+    <header>
+        <h1>门窗安装工单管理系统</h1>
+        <button class="btn btn-primary" onclick="showCreateModal()">+ 新建工单</button>
+    </header>
+
+    <div class="filter-bar">
+        <div class="filters">
+            <select id="statusFilter" onchange="loadOrders()">
+                <option value="all">全部状态</option>
+                <option value="pending">待安装</option>
+                <option value="in_progress">施工中</option>
+                <option value="completed">已完工</option>
+            </select>
+            <input type="text" id="keyword" placeholder="搜索工单编号/客户/地址..." onkeyup="handleSearch(event)">
+            <button class="btn btn-secondary" onclick="loadOrders()">搜索</button>
+        </div>
+        <div class="stats">
+            <span class="stat stat-pending">待安装: <strong id="pendingCount">0</strong></span>
+            <span class="stat stat-progress">施工中: <strong id="progressCount">0</strong></span>
+            <span class="stat stat-completed">已完工: <strong id="completedCount">0</strong></span>
+            <span class="stat stat-total">总计: <strong id="totalCount">0</strong></span>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table class="order-table">
+            <thead>
+                <tr>
+                    <th>工单编号</th>
+                    <th>客户姓名</th>
+                    <th>联系电话</th>
+                    <th>施工地址</th>
+                    <th>产品类型</th>
+                    <th>数量</th>
+                    <th>安装日期</th>
+                    <th>状态</th>
+                    <th>客户反馈</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody id="orderTable">
+                <tr>
+                    <td colspan="10" class="loading">加载中...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modalTitle">新建工单</h2>
+            <span class="close" onclick="hideModal()">&times;</span>
+        </div>
+        <form id="orderForm">
+            <input type="hidden" id="orderId">
+            <div class="form-group">
+                <label>工单编号</label>
+                <input type="text" id="orderNo" placeholder="自动生成，可手动修改">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>客户姓名 *</label>
+                    <input type="text" id="customerName" required>
+                </div>
+                <div class="form-group">
+                    <label>联系电话</label>
+                    <input type="text" id="phone">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>施工地址 *</label>
+                <input type="text" id="address" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>产品类型</label>
+                    <select id="productType">
+                        <option value="铝合金门窗">铝合金门窗</option>
+                        <option value="塑钢门窗">塑钢门窗</option>
+                        <option value="断桥铝门窗">断桥铝门窗</option>
+                        <option value="阳光房">阳光房</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>数量</label>
+                    <input type="number" id="quantity" value="1" min="1">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>安装日期</label>
+                    <input type="date" id="installDate">
+                </div>
+                <div class="form-group">
+                    <label>状态</label>
+                    <select id="status">
+                        <option value="pending">待安装</option>
+                        <option value="in_progress">施工中</option>
+                        <option value="completed">已完工</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>客户反馈备注</label>
+                <textarea id="feedback" rows="3" placeholder="请输入客户反馈..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideModal()">取消</button>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="feedbackModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>添加客户反馈</h2>
+            <span class="close" onclick="hideFeedbackModal()">&times;</span>
+        </div>
+        <form id="feedbackForm">
+            <input type="hidden" id="feedbackOrderId">
+            <div class="form-group">
+                <label>客户反馈备注</label>
+                <textarea id="feedbackContent" rows="5" placeholder="请输入客户反馈..."></textarea>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="hideFeedbackModal()">取消</button>
+                <button type="submit" class="btn btn-primary">保存反馈</button>
+            </div>
+        </form>
+    </div>
+</div>

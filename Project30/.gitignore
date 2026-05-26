@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+.env.local
+campus_book_exchange.db
+*.db
+.idea/
+.vscode/
+dist/
+build/

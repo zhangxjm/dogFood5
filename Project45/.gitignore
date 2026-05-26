@@ -1,6 +1,0 @@
-node_modules/
-travel.db
-travel.db-shm
-travel.db-wal
-*.log
-.env
